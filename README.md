@@ -9,4 +9,96 @@
 
 4) Refer the BootProcess.png for why to switch between eMMC and the SSD, but how?
 
-5) 
+5) Always take the MAC binded to the Ethernet for the Silver Microchip Licence
+
+6) When doing a UART debug between the SOC and host laptop via PuTTY client, select to Serial connection type, adjust the Baud=115200, and then perform the console, but only after flashing the board (via the JTAG DEBUGGER!?) with a program to transmit via the USART something?! Not sure...., need to verify this part...., but also idk about how to check which USB port is the board connected to, like the /dev/ttyS0 or some /dev/ttyUSB*, like how?! 
+
+7) How to see UART using minicom between mcu and laptop over serial to usb port? - I think I saw a yt video for that - https://www.youtube.com/watch?v=dEQwSl8mCFs
+
+8) https://www.microchip.com/en-us/products/fpgas-and-plds/fpga-and-soc-design-tools/fpga/libero-software-later-versions - Use this to download the Libero SDK after having recieved the license.dat on my mail from Microchip regarding the Libero Silver 1Yr Floating License for Linux Server (LIB-SLV-F-1YR), it can be found here - https://www.microchipdirect.com/fpga-software-products?_ga=2.35074785.1714206911.1658467220-1049315983.1658467219, anyhow the mail contents are below,
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+The attached license enables operation of Libero software per the terms of the license agreement you accepted during your software installation.
+ 
+Refer the below Libero Software Download 
+https://www.microchip.com/en-us/products/fpgas-and-plds/fpga-and-soc-design-tools/fpga/libero-software-later-versions
+
+License Installation Quick Start Guide
+https://coredocs.s3.amazonaws.com/Libero/2023_1/Tool/libero_download_license_quickstart.pdf
+ 
+Libero Software Installation and Licensing Guide
+https://coredocs.s3.amazonaws.com/Libero/2023_1/Tool/Libero_Installation_Licensing_Setup_User_Guide.pdf
+
+NOTE:
+    Starting with Libero SoC v2024.2, the latest 64-bit license daemons with FlexLM v11.19 are required for all floating license users. 
+License daemon download links are included below. Please refer to release notes for more details.
+https://www.microchip.com/en-us/products/fpgas-and-plds/fpga-and-soc-design-tools/fpga/libero-software-later-versions
+
+Linux license daemon bundle: 
+    https://ww1.microchip.com/downloads/secure/aemDocuments/documents/FPGA/media-content/FPGA/daemons/Linux_Licensing_Daemon_11.19.6.0_64-bit.tar.gz
+Windows license daemon bundle:
+    https://ww1.microchip.com/downloads/secure/aemDocuments/documents/FPGA/media-content/FPGA/daemons/Windows_Licensing_Daemon_11.19.6.0_64-bit.zip
+
+
+And i have uploaded the license.dat too
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+9) BTW Our Board's - ssh root@172.16.222.200
+
+10) Here's how I downloaded the Libero for UBuntu 24.04 LTS
+  
+      Found your MAC ID and hostname  
+      /sbin/ifconfig -a | grep ether  
+      hostname  
+  
+  Got your license (License.dat) from Microchip  
+      (Downloaded License.dat to ~/Downloads)  
+  
+  Created license directory and extracted license daemons  
+      sudo mkdir -p /opt/microchip/license  
+      sudo tar -xvzf ~/Downloads/Linux_Licensing_Daemon_11.19.6.0_64-bit.tar.gz -C /opt/microchip/license  
+  
+  Copied License.dat into license folder  
+      sudo cp ~/Downloads/License.dat /opt/microchip/license/  
+  
+  Started license server with log file  
+      cd /opt/microchip/license  
+      sudo /opt/microchip/license/lmgrd -c /opt/microchip/license/License.dat -l /opt/microchip/license/license.log  
+  
+  Fixed FlexLM missing temp directory error  
+      sudo mkdir -p /usr/tmp/.flexlm  
+      sudo chmod 777 /usr/tmp/.flexlm  
+  
+  Set license environment variable  
+      export LM_LICENSE_FILE=1702@Maverick  
+  
+  Unzipped Libero 2025.1 web installer  
+      unzip ~/Downloads/libero_soc_2025.1_online_lin.zip -d ~/Downloads/libero2025_installer  
+      cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin  
+      chmod +x Libero_SoC_2025.1_online_lin.bin  
+  
+  Fixed missing dependency (libxcb-cursor)  
+      sudo apt update  
+      sudo apt install libxcb-cursor0  
+  
+  Fixed missing dependency (libpng15) by building from source  
+      cd ~/Downloads  
+      wget https://sourceforge.net/projects/libpng/files/libpng15/older-releases/1.5.15/libpng-1.5.15.tar.gz  
+      tar -xzf libpng-1.5.15.tar.gz  
+      cd libpng-1.5.15  
+      ./configure --prefix=/usr/local  
+      make  
+      sudo make install  
+      sudo ldconfig  
+  
+  (If needed, told system where to find libpng15)  
+      export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH  
+  
+  Finally ran the Libero installer  
+      cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin  
+      ./Libero_SoC_2025.1_online_lin.bin  
+

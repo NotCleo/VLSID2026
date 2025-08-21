@@ -123,7 +123,6 @@ And i have uploaded the license.dat too
 
 12) run /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero everytime i have to open Libero
 
-13) 
-
+13) see this demo - https://www.youtube.com/watch?v=_4nW-BgvGoU
 
 

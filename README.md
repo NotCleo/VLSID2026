@@ -7,6 +7,6 @@
 
 3) How to check my laptop's MAC/IP and what ports are active, and what's my ethernet port and is it active or not? How do I check if the Icicle Kit to which I have SSH access into is communicating with my laptop or not via the ethernet? How do I check the same things for the board too?
 
-4) Refer the BootProcess.png for how to switch between eMMC and the SSD
+4) Refer the BootProcess.png for why to switch between eMMC and the SSD, but how?
 
 5) 

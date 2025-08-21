@@ -47,66 +47,83 @@ And i have uploaded the license.dat too
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
-9) BTW Our Board's - ssh root@172.16.222.200
+# Steps to Download, Install, and Launch Libero SoC 2025.1 on Ubuntu 24.04 LTS
 
-10) Here's how I downloaded the Libero for UBuntu 24.04 LTS
-  
-      Found your MAC ID and hostname  
-      /sbin/ifconfig -a | grep ether  
-      hostname  
-  
-  Got your license (License.dat) from Microchip  
-      (Downloaded License.dat to ~/Downloads)  
-  
-  Created license directory and extracted license daemons  
-      sudo mkdir -p /opt/microchip/license  
-      sudo tar -xvzf ~/Downloads/Linux_Licensing_Daemon_11.19.6.0_64-bit.tar.gz -C /opt/microchip/license  
-  
-  Copied License.dat into license folder  
-      sudo cp ~/Downloads/License.dat /opt/microchip/license/  
-  
-  Started license server with log file  
-      cd /opt/microchip/license  
-      sudo /opt/microchip/license/lmgrd -c /opt/microchip/license/License.dat -l /opt/microchip/license/license.log  
-  
-  Fixed FlexLM missing temp directory error  
-      sudo mkdir -p /usr/tmp/.flexlm  
-      sudo chmod 777 /usr/tmp/.flexlm  
-  
-  Set license environment variable  
-      export LM_LICENSE_FILE=1702@Maverick  
-  
-  Unzipped Libero 2025.1 web installer  
-      unzip ~/Downloads/libero_soc_2025.1_online_lin.zip -d ~/Downloads/libero2025_installer  
-      cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin  
-      chmod +x Libero_SoC_2025.1_online_lin.bin  
-  
-  Fixed missing dependency (libxcb-cursor)  
-      sudo apt update  
-      sudo apt install libxcb-cursor0  
-  
-  Fixed missing dependency (libpng15) by building from source  
-      cd ~/Downloads  
-      wget https://sourceforge.net/projects/libpng/files/libpng15/older-releases/1.5.15/libpng-1.5.15.tar.gz  
-      tar -xzf libpng-1.5.15.tar.gz  
-      cd libpng-1.5.15  
-      ./configure --prefix=/usr/local  
-      make  
-      sudo make install  
-      sudo ldconfig  
-  
-  (If needed, told system where to find libpng15)  
-      export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH  
-  
-  Finally ran the Libero installer  
-      cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin  
-      ./Libero_SoC_2025.1_online_lin.bin  
+1. **Found MAC ID and hostname**
+   /sbin/ifconfig -a | grep ether
+   hostname
+
+2. **Got license from Microchip**
+   # Downloaded License.dat from Microchip and placed into ~/Downloads
+
+3. **Created license directory and extracted license daemons**
+   sudo mkdir -p /opt/microchip/license
+   sudo tar -xvzf ~/Downloads/Linux_Licensing_Daemon_11.19.6.0_64-bit.tar.gz -C /opt/microchip/license
+
+4. **Copied License.dat into license folder**
+   sudo cp ~/Downloads/License.dat /opt/microchip/license/
+
+5. **Started license server with log file**
+   cd /opt/microchip/license
+   sudo /opt/microchip/license/lmgrd -c /opt/microchip/license/License.dat -l /opt/microchip/license/license.log
+
+6. **Fixed FlexLM missing temp directory error**
+   sudo mkdir -p /usr/tmp/.flexlm
+   sudo chmod 777 /usr/tmp/.flexlm
+
+7. **Set license environment variable**
+   export LM_LICENSE_FILE=1702@Maverick
+
+8. **Unzipped Libero 2025.1 web installer**
+   unzip ~/Downloads/libero_soc_2025.1_online_lin.zip -d ~/Downloads/libero2025_installer
+   cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin
+   chmod +x Libero_SoC_2025.1_online_lin.bin
+
+9. **Fixed missing dependency (libxcb-cursor)**
+   sudo apt update
+   sudo apt install libxcb-cursor0
+
+10. **Fixed missing dependency (libpng15) by building from source**
+    cd ~/Downloads
+    wget https://sourceforge.net/projects/libpng/files/libpng15/older-releases/1.5.15/libpng-1.5.15.tar.gz
+    tar -xzf libpng-1.5.15.tar.gz
+    cd libpng-1.5.15
+    ./configure --prefix=/usr/local
+    make
+    sudo make install
+    sudo ldconfig
+
+    # Optional if needed
+    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+11. **Ran the Libero installer**
+    cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin
+    ./Libero_SoC_2025.1_online_lin.bin
+
+12. **Installed additional required packages for FP6 / Designer tools**
+    sudo /home/amrut/microchip/Libero_SoC_2025.1/req_to_install.sh
+    sudo /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/fp6_env_install
+
+13. **Fixed GLIBCXX mismatch by using system libstdc++ instead of bundled one**
+    mv /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/lib64/rhel/libstdc++.so.6 \
+       /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/lib64/rhel/libstdc++.so.6.bak
+
+14. **Launched Libero successfully**
+    /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero &
+
+15. **(Optional) Create alias for convenience**
+    echo 'alias libero="/home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero"' >> ~/.bashrc
+    source ~/.bashrc
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
-11) Then comes the part of how do I switch between the eMMC and the SSD in that MUX, is it via the Libero?! How? Since i'm planning to boot as discussed in step (1), because package manager issue or something with the linux that the board booted with, we couldn't do anything around that, so this is what we came up with.....
+11) Then comes the part of how do I switch between the eMMC and the SSD in that MUX, is it via the Libero?! How? Since i'm planning to boot as discussed in step (1), because package manager issue or something with the linux that the board booted with, we couldn't do anything around that, so this is what we came up with....
+
+12) run /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero everytime i have to open Libero
+
+13) 
 
 
 

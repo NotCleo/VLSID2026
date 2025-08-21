@@ -102,3 +102,11 @@ And i have uploaded the license.dat too
       cd ~/Downloads/libero2025_installer/Libero_SoC_2025.1_online_lin  
       ./Libero_SoC_2025.1_online_lin.bin  
 
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+11) Then comes the part of how do I switch between the eMMC and the SSD in that MUX, is it via the Libero?! How? Since i'm planning to boot as discussed in step (1), because package manager issue or something with the linux that the board booted with, we couldn't do anything around that, so this is what we came up with.....
+
+
+

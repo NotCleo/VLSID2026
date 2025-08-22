@@ -1,5 +1,7 @@
 # VLSID2026
 
+The event registration is here - https://vlsid.org/design-contest/
+
 
 1) We're flashing the board with a SSD, which will be loaded with the Ubuntu(RV variant) - ubuntu-24.04.3-preinstalled-server-riscv64+icicle.img.xz
 
@@ -109,7 +111,7 @@ And i have uploaded the license.dat too
        /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/lib64/rhel/libstdc++.so.6.bak
 
 14. **Launched Libero successfully**
-    /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero &
+    /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero 
 
 15. **(Optional) Create alias for convenience**
     echo 'alias libero="/home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero"' >> ~/.bashrc
@@ -127,6 +129,40 @@ And i have uploaded the license.dat too
 
 14) Prof wants us to use a Robot?! - https://clearpathrobotics.com/turtlebot-4/
 
-15) 
+15) If you face issues regarding the license validity, perform these debug statements,
+    in the sense if "/home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero" does not work
+
+run these, 
+
+     ps -ef | grep lmgrd
+     tail -n 100 /opt/microchip/license/license.log
+     echo $LM_LICENSE_FILE
+     export LM_LICENSE_FILE=1702@Maverick
+     echo 'export LM_LICENSE_FILE=1702@Maverick' >> ~/.bashrc
+     verify using echo $LM_LICENSE_FILE again
+     /opt/microchip/license/lmutil lmstat -a -c 1702@Maverick
+     cd /opt/microchip/license/
+     do a list all to verify license.dat's presence
+     sudo ./lmgrd -c /opt/microchip/license/License.dat -l /opt/microchip/license/license.log
+     ps aux | grep lmgrd
+     /opt/microchip/license/lmutil lmstat -a -c 1702@Maverick -> veriy if you get the Actel_BASESoC
+     now run -> /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero
+
+
+
+
+# 1) Start the license server manually
+cd /opt/microchip/license
+sudo ./lmgrd -c /opt/microchip/license/License.dat -l /opt/microchip/license/license.log
+
+# 2) Verify the license server is running
+ps aux | grep lmgrd
+
+# 3) Check license server status
+/opt/microchip/license/lmutil lmstat -a -c 1702@Maverick
+
+# 4) (Optional) Make the license server start automatically on boot
+sudo nano /etc/systemd/system/microchip-license.service
+
 
 

@@ -1,5 +1,14 @@
 # VLSID2026
 
+
+Here's the manual diagram to ensure we dont mess up UART/MSS-Config/FlashPro ports
+
+![image]([https://github.com/NotCleo/Youtube-Transcript-RAG/blob/main/rag.png?raw=true](https://github.com/NotCleo/VLSID2026/blob/main/image.png)) 
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
 The event registration is here - https://vlsid.org/design-contest/
 
 
@@ -221,7 +230,35 @@ So now we need to look for QSPI update or Image downgrade to match the bootloade
 
 23) Updating the QSPI wont fix it apparently, we will need to i think build the HSS payload using the raw ubuntu disk image, as raw ubuntu disk image has only the GPT partitions like rootfs, Uboot and the kernel so back to making the HSS payload fix.
 
-24) 
+24) Note to self - reset is SW4
+
+25) 
+
+i ) hss payload generator to wrap up the raw ubuntu disk image that's flashed into the card 
+
+side quests with this above task -> build up/verify on Shravan's CGPT context of the HSS versioning with Ubun22 - "we have a relatively new HSS version running 2023.6 which should support ubuntu"
+
+
+confirm if (my doubt) (we think its the first way)
+
+a) we need to have the sd card flashed with the raw ubuntu image and then generate the HSS payload (maybe via the Mobax/SoftConsole/Libero)
+
+(or)
+
+b) we need to have the sd card flashed with the raw ubuntu image already wrapped up in the HSS payload which we will generate in our host pc (maybe via the Mobax/SoftConsole/Libero)
+
+ii ) We then need to verify if we flashed with/wo partition in the sdc, that's the issue we are primarily facing(regarding the partition of ubuntu)
+
+if we manage to boot it successfully, we will then have to perform
+
+    -> Check python --version/ python3 --version, ubun22 does come with python packages/manager so we are hoping it works
+    -> Then we need to again verify our network configurations right? since we booted with a new kernel in the board
+    -> Then we need to test further with whatever works, maybe try out the yolov7.vnnx-> yolov7.tflite and try it out once
+
+
+iii) Meanwhile the posenet PTQ files, the "issue" was as shravan mentions there are different datasets and not a global dataset, unlike what we understood from the yolo's PTQ which (sorry to re iterate) was
+
+    -> Had the coco2017's calibration dataset (as a bin file), and we would PTQ the yolo (actually the bash script is what's doing it automatically because it's preloaded), so we have not one but many such "calibration datasets" (hopefully as a bin file) for the POSENET (this is what i understood, please correct me), so this is how the quantization problem came up, we will need to figure this out
 
 
 

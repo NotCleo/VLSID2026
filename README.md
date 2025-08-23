@@ -170,7 +170,34 @@ sudo nano /etc/systemd/system/microchip-license.service
 16) I downloaded the SoftConsole as mentioned in the vectorblox and it gave the post installation guide here (dont judge it's only for my laptop) - file:///home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/documentation/softconsole/using_softconsole/post_installation.html
 
 17) Mobuxterminal ko use karke we can see the boot console, log files as it boots.
+ 
+---------------------------------------------------------------------------------------------------------------------------------------------
 
-18) 
+18) # 1. Monitor which device appears when you plug in the Icicle Kit's SD card
+inotifywait --event create --format "%w%f" /dev
+
+# (you will see something like /dev/sdX or /dev/mmcblk0, not /dev/sg0)
+
+# 2. Verify what was detected
+lsblk -p
+
+# Look for the correct device (example: /dev/sdb or /dev/mmcblk0) and its size (should match your SD card size).
+
+# 3. Flash the image to that device
+# Replace /dev/sdX with the correct one you found in lsblk
+sudo dd if=ubuntu-24.04.3-preinstalled-server-riscv64+icicle.img \
+        of=/dev/sdX \
+        bs=16M status=progress conv=fsync
+
+# 4. Once done, safely eject
+sync
+sudo eject /dev/sdX
+
+Triple Check this otherwise DEATH!
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+19) We tried flashing with Ubuntu 24.04 but the QSPI was not supporting it and hence the image's header couldnt be read with correct offset, however the issue of the board detecting the boot from SD card was a relief as we do not need 
 
 

@@ -286,7 +286,38 @@ iii) Meanwhile the posenet PTQ files, the "issue" was as shravan mentions there 
 
 26) For the SD card to boot reliably, the j34/j43 jumpers must be short pins 1 and 2 to set 1.8 volts, if we want to verify see the video on the polarfire kit's website. If the jumpers are shorted on pin 2 and 3, it will be set at 3.3volts (reference for pin 1 2 3 regarding how to read is, keep the power pin of the board facing left and then read the pins 123 from right to left), video is here btw - https://www.youtube.com/watch?v=wip-mpxsR8k&t=35s
 
-27) 
+27) mrut@Maverick:~$ arp -a
+_gateway (172.16.111.1) at 00:09:0f:09:01:12 [ether] on wlp2s0
+amrut@Maverick:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: enp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether c4:ef:bb:ab:db:5b brd ff:ff:ff:ff:ff:ff
+3: wlp2s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 70:08:94:61:af:2b brd ff:ff:ff:ff:ff:ff
+    inet 172.16.104.100/19 brd 172.16.127.255 scope global dynamic noprefixroute wlp2s0
+       valid_lft 604392sec preferred_lft 604392sec
+    inet6 fe80::a4a4:b01e:8729:ec6/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+4: lxcbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 00:16:3e:00:00:00 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.3.1/24 brd 10.0.3.255 scope global lxcbr0
+       valid_lft forever preferred_lft forever
+amrut@Maverick:~$ ip route
+default via 172.16.111.1 dev wlp2s0 proto dhcp src 172.16.104.100 metric 600 
+10.0.3.0/24 dev lxcbr0 proto kernel scope link src 10.0.3.1 linkdown 
+172.16.96.0/19 dev wlp2s0 proto kernel scope link src 172.16.104.100 metric 600 
+amrut@Maverick:~$ sudo ip addr add 192.168.100.1/24 dev enp1s0
+[sudo] password for amrut: 
+amrut@Maverick:~$ sudo ip link set enp1s0 up
+amrut@Maverick:~$ sudo sysctl -w net.ipv4.ip_forward=1
+net.ipv4.ip_forward = 1
+amrut@Maverick:~$ sudo iptables -t nat -A POSTROUTING -o wlp2s0 -j MASQUERADE
+
 
 
 

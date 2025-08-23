@@ -207,11 +207,23 @@ But we now are facing the issue of QSPI compatibility issue as it's not detectin
 So now we need to look for QSPI update or Image downgrade to match the bootloader to read the image's header correctly
 
 
-20) I needed to get the desktop shortcut sorted out for the SoftConsole, or just run - /home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/softconsole.sh everytime to launch the SoftConsole
+20) I needed to get the desktop shortcut sorted out for the SoftConsole, or just run - /home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/softconsole.sh everytime to launch the SoftConsole, btw i was told to read the post installation guide - file:////home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/documentation/softconsole/using_softconsole/post_installation.html
 
 
-21) Do figure out what is rootfs, how does the bootloader work in linux, what is a bootloader, what is firmware, image? and what is this /dev, /usr, /bin, /proc, ... all these directories which are different from my /Downloads,/Desktop, .... and what is Uefi, GRUB, ....
 
-22) 
+
+21) (note to self, revise and figure out) what is rootfs, how does the bootloader work in linux, what is a bootloader, what is firmware, image? and what is this /dev, /usr, /bin, /proc, ... all these directories which are different from my /Downloads,/Desktop, .... and what is Uefi, GRUB, ....
+
+
+
+
+22) OUr HSS - v0.99.36 - 2023, so we tried Ubuntu 24 and 22, and in either cases the HSS payload isnt being detected (the Bootloader isnt able to find the "image's header offset")
+
+23) Updating the QSPI wont fix it apparently, we will need to i think build the HSS payload using the raw ubuntu disk image, as raw ubuntu disk image has only the GPT partitions like rootfs, Uboot and the kernel so back to making the HSS payload fix.
+
+24) 
+
+
+
 
 

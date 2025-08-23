@@ -1,6 +1,9 @@
 # VLSID2026
 
 Most visited URLS are 
+
+    https://chatgpt.com/share/68a9d839-f9f0-8013-bfcf-3cb1bb41fc4f - Shravan's GPT context
+    
     
     https://www.microchip.com/en-us/development-tool/mpfs-icicle-kit-es
     https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/tutorials/onnx/yolov7/yolov7.sh

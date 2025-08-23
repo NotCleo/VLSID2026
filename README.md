@@ -10,6 +10,7 @@ Most visited URLS are
     https://github.com/polarfire-soc/icicle-kit-reference-design?tab=readme-ov-file
     https://github.com/Microchip-Vectorblox/VectorBlox-Video-Kit-Demo?tab=readme-ov-file
 
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 Here's the manual diagram to ensure we dont mess up UART/MSS-Config/FlashPro ports
 
@@ -41,6 +42,7 @@ The event registration is here - https://vlsid.org/design-contest/
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
+
 The attached license enables operation of Libero software per the terms of the license agreement you accepted during your software installation.
  
 Refer the below Libero Software Download 
@@ -168,7 +170,7 @@ run these,
      now run -> /home/amrut/microchip/Libero_SoC_2025.1/Libero_SoC/Designer/bin/libero
 
 
-
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 # 1) Start the license server manually
 cd /opt/microchip/license
@@ -280,6 +282,11 @@ iii) Meanwhile the posenet PTQ files, the "issue" was as shravan mentions there 
     -> Had the coco2017's calibration dataset (as a bin file), and we would PTQ the yolo (actually the bash script is what's doing it automatically because it's preloaded), so we have not one but many such "calibration datasets" (hopefully as a bin file) for the POSENET (this is what i understood, please correct me), so this is how the quantization problem came up, we will need to figure this out
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+26) For the SD card to boot reliably, the j34/j43 jumpers must be short pins 1 and 2 to set 1.8 volts, if we want to verify see the video on the polarfire kit's website. If the jumpers are shorted on pin 2 and 3, it will be set at 3.3volts (reference for pin 1 2 3 regarding how to read is, keep the power pin of the board facing left and then read the pins 123 from right to left), video is here btw - https://www.youtube.com/watch?v=wip-mpxsR8k&t=35s
+
+27) 
 
 
 

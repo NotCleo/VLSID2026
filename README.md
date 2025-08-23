@@ -1,5 +1,12 @@
 # VLSID2026
 
+Most visited URLS are 
+
+https://www.microchip.com/en-us/development-tool/mpfs-icicle-kit-es
+https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/tutorials/onnx/yolov7/yolov7.sh
+https://github.com/polarfire-soc/icicle-kit-reference-design?tab=readme-ov-file
+https://github.com/Microchip-Vectorblox/VectorBlox-Video-Kit-Demo?tab=readme-ov-file
+
 
 Here's the manual diagram to ensure we dont mess up UART/MSS-Config/FlashPro ports
 

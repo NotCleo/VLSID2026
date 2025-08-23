@@ -169,4 +169,8 @@ sudo nano /etc/systemd/system/microchip-license.service
 
 16) I downloaded the SoftConsole as mentioned in the vectorblox and it gave the post installation guide here (dont judge it's only for my laptop) - file:///home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/documentation/softconsole/using_softconsole/post_installation.html
 
+17) Mobuxterminal ko use karke we can see the boot console, log files as it boots.
+
+18) 
+
 

@@ -235,6 +235,8 @@ BTW ubuntu distros for Microchip was from here - https://canonical-ubuntu-boards
 
 25) 
 
+Probably this is one starting point - https://github.com/polarfire-soc/hart-software-services
+
 i ) hss payload generator to wrap up the raw ubuntu disk image that's flashed into the card 
 
 side quests with this above task -> build up/verify on Shravan's CGPT context of the HSS versioning with Ubun22 - "we have a relatively new HSS version running 2023.6 which should support ubuntu"

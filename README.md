@@ -169,7 +169,7 @@ sudo nano /etc/systemd/system/microchip-license.service
 
 16) I downloaded the SoftConsole as mentioned in the vectorblox and it gave the post installation guide here (dont judge it's only for my laptop) - file:///home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/documentation/softconsole/using_softconsole/post_installation.html
 
-17) Mobuxterminal ko use karke we can see the boot console, log files as it boots.
+17) Mobaxterminal ko use karke we can see the boot console, log files as it boots.
  
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -195,9 +195,23 @@ sudo eject /dev/sdX
 
 Triple Check this otherwise DEATH!
 
+
+reference - https://canonical-ubuntu-boards.readthedocs-hosted.com/en/latest/how-to/flash-images/
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
-19) We tried flashing with Ubuntu 24.04 but the QSPI was not supporting it and hence the image's header couldnt be read with correct offset, however the issue of the board detecting the boot from SD card was a relief as we do not need 
+19) We tried flashing with Ubuntu 24.04 but the QSPI was not supporting it and hence the image's header couldnt be read with correct offset, however the issue of the board detecting the boot from SD card was a relief as we do not need use any SoftConsole to get it to switch from eNVM to SD, but it happens on its own
+
+But we now are facing the issue of QSPI compatibility issue as it's not detecting the HSS payload and apparently our image which we flahsed does not support it
+
+So now we need to look for QSPI update or Image downgrade to match the bootloader to read the image's header correctly
+
+
+20) I needed to get the desktop shortcut sorted out for the SoftConsole, or just run - /home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/softconsole.sh everytime to launch the SoftConsole
+
+
+21) Do figure out what is rootfs, how does the bootloader work in linux, what is a bootloader, what is firmware, image? and what is this /dev, /usr, /bin, /proc, ... all these directories which are different from my /Downloads,/Desktop, .... and what is Uefi, GRUB, ....
+
+22) 
 
 

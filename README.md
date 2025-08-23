@@ -3,7 +3,7 @@
 
 Here's the manual diagram to ensure we dont mess up UART/MSS-Config/FlashPro ports
 
-![image]([https://github.com/NotCleo/Youtube-Transcript-RAG/blob/main/rag.png?raw=true](https://github.com/NotCleo/VLSID2026/blob/main/image.png))
+![image](https://github.com/NotCleo/VLSID2026/blob/main/image.png?raw=true)
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------

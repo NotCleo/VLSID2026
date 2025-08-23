@@ -219,7 +219,7 @@ reference - https://canonical-ubuntu-boards.readthedocs-hosted.com/en/latest/how
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
-19) We tried flashing with Ubuntu 24.04 but the QSPI was not supporting it and hence the image's header couldnt be read with correct offset, however the issue of the board detecting the boot from SD card was a relief as we do not need use any SoftConsole to get it to switch from eNVM to SD, but it happens on its own
+19) We tried flashing with Ubuntu 24.04 but the QSPI was not supporting it and hence the image's header couldnt be read with correct offset, however the issue of the board detecting the boot from SD card was a relief as we do not need use any SoftConsole to get it to switch from eNVM to SD, but it happens on its own - "If SD is present, the kit usually prioritizes SD over eMMC"
 
 But we now are facing the issue of QSPI compatibility issue as it's not detecting the HSS payload and apparently our image which we flahsed does not support it
 
@@ -227,8 +227,6 @@ So now we need to look for QSPI update or Image downgrade to match the bootloade
 
 
 20) I needed to get the desktop shortcut sorted out for the SoftConsole, or just run - /home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/softconsole.sh everytime to launch the SoftConsole, btw i was told to read the post installation guide - file:////home/amrut/Microchip/SoftConsole-v2022.2-RISC-V-747/documentation/softconsole/using_softconsole/post_installation.html
-
-
 
 
 21) (note to self, revise and figure out) what is rootfs, how does the bootloader work in linux, what is a bootloader, what is firmware, image? and what is this /dev, /usr, /bin, /proc, ... all these directories which are different from my /Downloads,/Desktop, .... and what is Uefi, GRUB, ....
@@ -241,7 +239,15 @@ BTW ubuntu distros for Microchip was from here - https://canonical-ubuntu-boards
 
 23) Updating the QSPI wont fix it apparently, we will need to i think build the HSS payload using the raw ubuntu disk image, as raw ubuntu disk image has only the GPT partitions like rootfs, Uboot and the kernel so back to making the HSS payload fix.
 
-24) Note to self - reset is SW4
+here's the full explanation - "HSS is trying to boot a raw HSS payload from the MMC device (SD/eMMC). The “magic” values b007c0de / c08b8355 are for HSS-format payloads. Your Ubuntu media isn’t an HSS payload; it’s a normal disk image with GPT partitions (U-Boot, kernel, rootfs). So HSS looks for an HSS payload, doesn’t find one in the expected GPT partition, falls back to LBA0, reads garbage (from HSS’s perspective), and aborts. This is a configuration/flash-flow mismatch, not a QSPI problem
+Do you need to “upgrade QSPI”?
+
+No. On the Icicle Kit, HSS runs from eNVM, not QSPI; QSPI contents aren’t involved in this Ubuntu boot flow. Updating QSPI won’t fix this symptom."
+
+24) Note to self - reset is SW4 and do have a look at the diagram above always
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
 
 25) 
 
@@ -273,7 +279,7 @@ iii) Meanwhile the posenet PTQ files, the "issue" was as shravan mentions there 
 
     -> Had the coco2017's calibration dataset (as a bin file), and we would PTQ the yolo (actually the bash script is what's doing it automatically because it's preloaded), so we have not one but many such "calibration datasets" (hopefully as a bin file) for the POSENET (this is what i understood, please correct me), so this is how the quantization problem came up, we will need to figure this out
 
-
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 
 

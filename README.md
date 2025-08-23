@@ -3,7 +3,7 @@
 
 Here's the manual diagram to ensure we dont mess up UART/MSS-Config/FlashPro ports
 
-![image]([https://github.com/NotCleo/Youtube-Transcript-RAG/blob/main/rag.png?raw=true](https://github.com/NotCleo/VLSID2026/blob/main/image.png)) 
+![image]([https://github.com/NotCleo/Youtube-Transcript-RAG/blob/main/rag.png?raw=true](https://github.com/NotCleo/VLSID2026/blob/main/image.png)
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -224,6 +224,7 @@ So now we need to look for QSPI update or Image downgrade to match the bootloade
 21) (note to self, revise and figure out) what is rootfs, how does the bootloader work in linux, what is a bootloader, what is firmware, image? and what is this /dev, /usr, /bin, /proc, ... all these directories which are different from my /Downloads,/Desktop, .... and what is Uefi, GRUB, ....
 
 
+BTW ubuntu distros for Microchip was from here - https://canonical-ubuntu-boards.readthedocs-hosted.com/en/latest/how-to/microchip-polarfire-icicle/
 
 
 22) OUr HSS - v0.99.36 - 2023, so we tried Ubuntu 24 and 22, and in either cases the HSS payload isnt being detected (the Bootloader isnt able to find the "image's header offset")

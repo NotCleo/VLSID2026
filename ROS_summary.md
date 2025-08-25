@@ -92,4 +92,4 @@ ROS is **not an operating system**, but a **middleware framework** that revoluti
 
 See this Image below,
 
-![image]()
+![image](https://github.com/NotCleo/VLSID2026/blob/main/Mermaid%20Chart%20-%20Create%20complex,%20visual%20diagrams%20with%20text.%20A%20smarter%20way%20of%20creating%20diagrams.-2025-08-25-062124.png?raw=true)

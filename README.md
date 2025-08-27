@@ -10,6 +10,7 @@ Most visited URLS are
     https://github.com/polarfire-soc/icicle-kit-reference-design?tab=readme-ov-file
     https://github.com/Microchip-Vectorblox/VectorBlox-Video-Kit-Demo?tab=readme-ov-file
     https://web.pa.msu.edu/people/edmunds/Disco_Kraken/PolarFire_SoC_Register_Map/PF_SoC_RegMap/pfsoc_regmap.htm
+    file:///home/amrut/Downloads/microchip_polarfire_soc_fpga_icicle_kit_user_guide_vb.pdf (obv this is only for me)
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 

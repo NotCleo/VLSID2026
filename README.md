@@ -11,6 +11,8 @@ Most visited URLS are
     https://github.com/Microchip-Vectorblox/VectorBlox-Video-Kit-Demo?tab=readme-ov-file
     https://web.pa.msu.edu/people/edmunds/Disco_Kraken/PolarFire_SoC_Register_Map/PF_SoC_RegMap/pfsoc_regmap.htm
     file:///home/amrut/Downloads/microchip_polarfire_soc_fpga_icicle_kit_user_guide_vb.pdf (obv this is only for me)
+    https://github.com/open-mmlab/mmaction2
+    https://github.com/mrdbourke/pytorch-deep-learning
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -253,9 +255,7 @@ No. On the Icicle Kit, HSS runs from eNVM, not QSPI; QSPI contents aren’t invo
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
-25) 
-
-Probably this is one starting point - https://github.com/polarfire-soc/hart-software-services
+25) Probably this is one starting point - https://github.com/polarfire-soc/hart-software-services
 
 i ) hss payload generator to wrap up the raw ubuntu disk image that's flashed into the card 
 
@@ -319,6 +319,14 @@ amrut@Maverick:~$ sudo ip link set enp1s0 up
 amrut@Maverick:~$ sudo sysctl -w net.ipv4.ip_forward=1
 net.ipv4.ip_forward = 1
 amrut@Maverick:~$ sudo iptables -t nat -A POSTROUTING -o wlp2s0 -j MASQUERADE
+
+
+28) We need to conf the .vnnx + .hex + .jpg for the GCC-rv64 -> meaning we need a fresh .sh script as yolov_deploy.sh to be sent over the scp cmd 
+
+29) Extra info : if we cat /dev/bus/usb/00x (x=1,2,3,4,5,6,7,8,9,10), we are being dumped with the .lss format (i guess for the peripheral GPIO-x
+
+30) 
+
 
 
 

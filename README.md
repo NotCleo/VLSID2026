@@ -329,5 +329,5 @@ amrut@Maverick:~$ sudo iptables -t nat -A POSTROUTING -o wlp2s0 -j MASQUERADE
 https://www.microchip.com/en-us/products/fpgas-and-plds/system-on-chip-fpgas/polarfire-soc-fpgas/asymmetric-multiprocessing
 
 
-
+pcie interfacing / lan/dhcp if linux done / sd or emmc to boot
 

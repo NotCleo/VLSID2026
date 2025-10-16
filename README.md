@@ -326,7 +326,7 @@ amrut@Maverick:~$ sudo iptables -t nat -A POSTROUTING -o wlp2s0 -j MASQUERADE
 29) Extra info : if we cat /dev/bus/usb/00x (x=1,2,3,4,5,6,7,8,9,10), we are being dumped with the .lss format (i guess for the peripheral GPIO-x
 
 30) 
-
+https://www.microchip.com/en-us/products/fpgas-and-plds/system-on-chip-fpgas/polarfire-soc-fpgas/asymmetric-multiprocessing
 
 
 

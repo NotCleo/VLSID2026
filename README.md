@@ -331,3 +331,10 @@ https://www.microchip.com/en-us/products/fpgas-and-plds/system-on-chip-fpgas/pol
 
 pcie interfacing / lan/dhcp if linux done / sd or emmc to boot
 
+31) if we ever forget the password use this - https://askubuntu.com/questions/24006/how-do-i-reset-a-lost-administrative-password
+
+Our login - ubuntu
+pwd - ubuntu
+
+
+

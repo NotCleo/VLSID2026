@@ -337,4 +337,13 @@ Our login - ubuntu
 pwd - ubuntu
 
 
+to check liecense - https://www.microchipdirect.com/fpga-software-products
+
+
+32) 
+
+IMPORTANT URLS 
+
+- https://github.com/polarfire-soc/icicle-kit-reference-design/blob/master/diagrams/block_diagram.svg
+- 
 

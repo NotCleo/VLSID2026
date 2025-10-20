@@ -345,5 +345,17 @@ to check liecense - https://www.microchipdirect.com/fpga-software-products
 IMPORTANT URLS 
 
 - https://github.com/polarfire-soc/icicle-kit-reference-design/blob/master/diagrams/block_diagram.svg
-- 
+- https://www.youtube.com/watch?v=5lqATNRSOJY - to install mobaxterm for ubuntu (as no Windows machine available with me)
+
+to run Mobaxterm do : wine MobaXterm_Personal_25.3.exe 
+
+33) Now I need to figure out how to control the peripherals of the board, like GPIO/PWM via kernel and not via bare-metal (Soft console)
+
+what is "User LEDS"? is it an external LED that i have to connect or the onboard LEDS? - Well its the onboard LEDs! and the linux-examples repo talks about controlling the LED (GPIO) via SW2/3 so we will click on/off to turn on/off the GPIO flowstate.
+
+free -h : to check RAM
+lscpu  to check cpu stats
+df -h : to check disc utilization
+
+
 

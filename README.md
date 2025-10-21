@@ -202,43 +202,36 @@ A silly observation : What is "User LEDS"? is it an external LED that I have to 
 
 25) How do I set up LAN + Test GPIO (Referring Linux-example) on the board?!
 
-Physically set up LAN (cat6) between Me and Board at Eth1
+        Physically set up LAN (cat6) between Me and Board at Eth1
 
 On the PuTTy Perform these
 
-I'm not a root user, hence do sudo before every command!!
-
-lsblk -> show block /dev and mountpoints (checks rootfs)
-sudo apt install -y build-essential git libgpiod-dev pkg-config -> install build essentials and libgpiod (runtime + dev for compiling examples)
-But above command requires LAN set up;
-
-sudo ip link set eth1 up
-sudo dhclient eth1
-ip addr show eth1
-inet 10.x.x.x or 192.168.x.x  (means you got an IP)
-ping -c 3 google.com
-echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf ( run ping -c 3 8.8.8.8 and if only that worked and not ping google then run this line)
-
-Perform "gpiodetect" after LAN set up!
-sudo apt install -y gpiod -> If it does not work
-ls /sys/class/leds
-
-sudo mkdir -p /opt/microchip/gpio
-cd /opt/microchip/gpio
-open up the two gpio-event.c and gpio-test.c and compile them from /opt/microchip/gpio
-(I believe we cannot vim because PuTTy sucks so git clone https://github.com/polarfire-soc/polarfire-soc-linux-examples.git at /opt/microchip/gpio!)
-
-sudo make -> To build the Makefile
-
-gcc -o gpiod-test gpiod-test.c -lgpiod
-gcc -o gpiod-event gpiod-event.c -lgpiod
-
-sudo ./gpiod-test
-sudo ./gpio-event
+    I'm not a root user, hence do sudo before every command!!
+    lsblk -> show block /dev and mountpoints (checks rootfs)
+    sudo apt install -y build-essential git libgpiod-dev pkg-config -> install build essentials and libgpiod (runtime + dev for compiling examples)
+    But above command requires LAN set up;
+    sudo ip link set eth1 up
+    sudo dhclient eth1
+    ip addr show eth1
+    inet 10.x.x.x or 192.168.x.x  (means you got an IP)
+    ping -c 3 google.com
+    echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf ( run ping -c 3 8.8.8.8 and if only that worked and not ping google then run this line)
+    Perform "gpiodetect" after LAN set up!
+    sudo apt install -y gpiod -> If it does not work
+    ls /sys/class/leds
+    sudo mkdir -p /opt/microchip/gpio
+    cd /opt/microchip/gpio
+    open up the two gpio-event.c and gpio-test.c and compile them from /opt/microchip/gpio
+    (I believe we cannot vim because PuTTy sucks so git clone https://github.com/polarfire-soc/polarfire-soc-linux-examples.git at /opt/microchip/gpio!)
+    sudo make -> To build the Makefile
+    gcc -o gpiod-test gpiod-test.c -lgpiod
+    gcc -o gpiod-event gpiod-event.c -lgpiod
+    sudo ./gpiod-test
+    sudo ./gpio-event
 
 On my local machine Perform these : 
 
-Do settings > network > wired > IPv4 > Shared to other computers > apply after LAN cable set up
+    Do settings > network > wired > IPv4 > Shared to other computers > apply after LAN cable set up
 
 
 

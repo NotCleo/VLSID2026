@@ -78,7 +78,7 @@ The event registration is here - https://vlsid.org/design-contest/
     sudo make install
     sudo ldconfig
 
-    # Optional if needed
+    Optional if needed
     export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 11. **Ran the Libero installer**
@@ -129,17 +129,17 @@ run these,
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
-# 1) Start the license server manually
+1) Start the license server manually
 cd /opt/microchip/license
 sudo ./lmgrd -c /opt/microchip/license/License.dat -l /opt/microchip/license/license.log
 
-# 2) Verify the license server is running
+2) Verify the license server is running
 ps aux | grep lmgrd
 
-# 3) Check license server status
+3) Check license server status
 /opt/microchip/license/lmutil lmstat -a -c 1702@Maverick
 
-# 4) (Optional) Make the license server start automatically on boot
+4) (Optional) Make the license server start automatically on boot
 sudo nano /etc/systemd/system/microchip-license.service
 
 ---------------------------------------------------------------------------------------------------------------------------------------------

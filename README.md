@@ -197,8 +197,6 @@ Our pwd - ubuntu
 
 A silly observation : What is "User LEDS"? is it an external LED that I have to connect or the onboard LEDS? - Well its the onboard LEDs! and the linux-examples repo talks about controlling the LED (GPIO) via SW2/3 so we will click on/off to turn on/off the GPIO flowstate.
 
-<img width="1272" height="792" alt="image" src="https://github.com/user-attachments/assets/3446b018-1ecc-41af-bd99-ad1fb8c51713" />
-
 
 25) How do I set up LAN + Test GPIO (Referring Linux-example) on the board?!
 

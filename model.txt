@@ -8,3 +8,6 @@ Downloads or converts a YOLOv7 model to ONNX → TensorFlow → TFLite → VNNX.
 Runs quantization (integer conversion using the calibration data).
 Runs simulation/inference on the VNNX file.
 
+
+if we are replacing COCO with our own dataset, we must generate our own calibration .npy file.
+That calibration file is used during quantization (specifically integer quantization when converting the ONNX → TFLite → VNNX), and it must represent the kind of images the model will see in deployment.

@@ -1,2 +1,10 @@
 To create a calibration dataset for post-training quantization (PTQ), select a small, representative subset of your training or validation data (around 100–500 samples) to run through the model. This dataset is used to collect statistics on the model's internal activations, which are then used to determine the optimal quantization parameters (like minimum and maximum ranges for each tensor) for mapping floating-point values to a lower-precision integer format. The dataset should be unlabeled, and its purpose is to capture the typical range of activation values to ensure accuracy is maintained after quantization. 
 
+
+The onnx bash script is a model preparation and deployment pipeline that:
+Activates the VBX SDK environment.
+Prepares a calibration dataset in .npy format.
+Downloads or converts a YOLOv7 model to ONNX → TensorFlow → TFLite → VNNX.
+Runs quantization (integer conversion using the calibration data).
+Runs simulation/inference on the VNNX file.
+

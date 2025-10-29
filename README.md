@@ -235,6 +235,10 @@ On my local machine Perform these :
 
 The board is currently running the Ubuntu image from Canonical, which is a generic Linux image. That explains why /dev/gpiochip* does not exist — the kernel in that image does not have the Microchip FPGA GPIO driver (gpio-mpfs) built, nor the GPIO character device support.
 
+To check OS on the container - cat /etc/os-release
+
+
+
 
 
 

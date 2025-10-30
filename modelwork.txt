@@ -1,0 +1,408 @@
+Primary Task : Post Packaging Quality Control (Rejection based on degree of damage)
+
+How are we approaching it?
+
+if i have a custom dataset of just top view images of cardboard boxes
+ 
+1) each image has one cardboard box from top view (90 degree) top down
+2) cardboard may or may not be in same orientation in terms of rotation
+3) cardboard boxes are off different dimensions and not necessarily same (in terms of length and breadth when observed from top
+4) the face of box which the camera captures may or may not have some text/printed illustration on it
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The task : (According to the dataset currently available)
+
+(a) detect the cardboard box in the image frame captured
+(b) generate a crop of that cardboard box standalone 
+(c) run a model to detect defects (tears, cavities/holes, dents/depression in surface, bulged surface) (by surface i mean the surface captured by the camera)
+(d) after any of the following defect is detected, it should classify the degree of defect and type of defect
+
+I feel atleast till step b we can pull it off with some opencv edge detection and thresholding
+
+then for step c we need to run the model!!
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Continued task : Once primary task dataset (as described above but with a QR code attached) is created for the task described below, we will perform:
+
+(a) The face of the cardboard box captured will have a QR/Bardcode which encodes information regarding the inside contents such as degree of fragility (0.1 meaning its absolutely fragile and any damage on the cardboard packaging box will damage the package, 0.9 meaning it's a solid package and the packaging being damaged is not affected even for a high degree of damage)
+
+(b) Essentially, we need to perform; f : (degree of damage/defect, degree of fragility) -> (rejection score)
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+We have a vectorblox SDK which performs PTQ of fp16-> int8 on popular TF models and in that we want to proceed with ONNX models;
+
+Source | Tutorial | Input (H,W,C) | V1000 FPS | Task | Metric | TFLITE | VNNX
+onnx |onnx_resnet18-v1| [224, 224, 3] |32.7| classification |Top1 |69.3| 68.8
+onnx |onnx_resnet34-v1 |[224, 224, 3] |17.8 |classification |Top1 |72.6 |72.2
+onnx |onnx_squeezenet1.1| [224, 224, 3]| 132.6| classification| Top1 |54.0 |54.8
+onnx |scrfd_500m_bnkps |[288, 512, 3] |85.8 |face detection|x |x |x
+onnx |yolov7 |[640, 640, 3] |1.0 |object detection |mAP⁵⁰⁻⁹⁵ |x|x
+onnx |yolov9-s| [640, 640, 3] |3.9 | object detection| mAP⁵⁰⁻⁹⁵| x|x
+onnx |yolov9-m| [640, 640, 3] |1.2 |object detection |mAP⁵⁰⁻⁹⁵ |x|x
+
+Here's what the SDK does for yolov7;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+##########################################################
+# _ __ __ ____ __ #
+# | | / /__ _____/ /_____ _____/ __ )/ /___ _ __ #
+# | | / / _ \/ ___/ __/ __ \/ ___/ __ / / __ \| |/_/ #
+# | |/ / __/ /__/ /_/ /_/ / / / /_/ / / /_/ /> < #
+# |___/\___/\___/\__/\____/_/ /_____/_/\____/_/|_| #
+# #
+# https://github.com/Microchip-Vectorblox/VectorBlox-SDK #
+# v2.0 #
+# #
+##########################################################
+
+set -e
+echo "Checking and activating VBX Python Environment..."
+if [ -z $VBX_SDK ]; then
+echo "\$VBX_SDK not set. Please run 'source setup_vars.sh' from the SDK's root folder" && exit 1
+fi
+source $VBX_SDK/vbx_env/bin/activate
+
+echo "Checking for Numpy calibration data file..."
+if [ ! -f $VBX_SDK/tutorials/imagenetv2_rgb_norm_20x224x224x3.npy ]; then
+generate_npy $VBX_SDK/tutorials/imagenetv2_rgb_20x224x224x3.npy -o $VBX_SDK/tutorials/imagenetv2_rgb_norm_20x224x224x3.npy -s 224 224 --norm
+fi
+
+echo "Checking for onnx_resnet18-v1 files..."
+if [ ! -f onnx_resnet18-v1.tflite ]; then
+# model details @ https://github.com/onnx/models/tree/main/validated/vision/classification/resnet
+wget -q --no-check-certificate https://media.githubusercontent.com/media/onnx/models/main/validated/vision/classification/resnet/model/resnet18-v1-7.onnx
+fi
+
+if [ ! -f onnx_resnet18-v1.tflite ]; then
+echo "Running ONNX2TF..."
+onnx2tf -cind data $VBX_SDK/tutorials/imagenetv2_rgb_norm_20x224x224x3.npy [[[[0.485,0.456,0.406]]]] [[[[0.229,0.224,0.225]]]] \
+-i resnet18-v1-7.onnx \
+--output_signaturedefs \
+--output_integer_quantized_tflite
+cp saved_model/resnet18-v1-7_full_integer_quant.tflite onnx_resnet18-v1.tflite
+fi
+if [ -f onnx_resnet18-v1.tflite ]; then
+tflite_preprocess onnx_resnet18-v1.tflite --mean 123.675 116.28 103.53 --scale 58.4 57.1 57.38
+fi
+
+if [ -f onnx_resnet18-v1.pre.tflite ]; then
+echo "Generating VNNX for V1000 configuration..."
+vnnx_compile -c V1000 -t onnx_resnet18-v1.pre.tflite -o onnx_resnet18-v1.vnnx
+fi
+
+if [ -f onnx_resnet18-v1.vnnx ]; then
+echo "Running Simulation..."
+python $VBX_SDK/example/python/classifier.py onnx_resnet18-v1.vnnx $VBX_SDK/tutorials/test_images/oreo.jpg
+echo "C Simulation Command:"
+echo '$VBX_SDK/example/sim-c/sim-run-model onnx_resnet18-v1.vnnx $VBX_SDK/tutorials/test_images/oreo.jpg CLASSIFY'
+fi
+
+deactivate
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In short we have the following actions happening,
+
+SDK Downloads and converts a trained YOLOv7 model to ONNX → TensorFlow → TFLite → VNNX.
+
+ 
+
+So the following doubts;
+
+1) What model fits our specific task the best? or do you suggest a different model altogether?
+2) how to generate NumPy calibration data file for quantization, which is custom to our dataset and not ImageNet/Coco dataset on which the models have been trained 
+3) I think we need to first train yolo/resnet with our dataset and save it as a onnx, then apply the bash file, updated wget with our trained model, and then update the calibration dataset (.npy file) tailored for our dataset 
+4) .....
+
+
+
+How to generate the vectorblox IP (V250!)
+
+1) ssh into our container
+2) at /home/joeld, the VectorBlox SDK has already been cloned 
+3) cd into /home/joeld/VectorBlox-SDK/ and run "bash install_dependencies.sh"
+4) In the same directory run "source setup_vars.sh"
+5) Confirm whether the virtual environment has been configured and activated
+6) cd $VBX_SDK/tutorials/{network_source}/{network} (for example; cd $VBX_SDK/tutorials/onnx/yolov7)
+7) bash {network}.sh (for example; bash yolov7.sh) 
+8) before running (7) we need to ensure our build flags is set to V250 and not V1000
+
+
+The VBXIP gets compiled and creates .vnnx, .hex and a lot many files
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+To proceed, 
+
+I first want to set up a python script that takes in images of cardboard box in a tray and atleast saves the crop of only the box (the face of the box standalone in the image frame captured) - see cardboard_face_crop.py for this -  It worked
+
+
+Kaggle dataset already had the images as crops!! so just generating a npy file directly from 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+So my preprocessing script is ready
+
+
+import cv2
+
+import numpy as np
+
+from google.colab import files
+
+from IPython.display import Image, display
+
+import matplotlib.pyplot as plt
+
+import os
+
+ 
+
+def robust_auto_crop(image_path, output_path=None, show_steps=False):
+
+img = cv2.imread(image_path)
+
+if img is None:
+
+print("Error loading image!")
+
+return
+
+ 
+
+original = img.copy()
+
+h, w = img.shape[:2]
+
+ 
+
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+ 
+
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+ 
+
+threshed = cv2.adaptiveThreshold(
+
+blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+
+cv2.THRESH_BINARY_INV, 11, 2
+
+)
+
+ 
+
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+
+threshed = cv2.morphologyEx(threshed, cv2.MORPH_CLOSE, kernel, iterations=2)
+
+threshed = cv2.morphologyEx(threshed, cv2.MORPH_OPEN, kernel, iterations=1)
+
+ 
+
+contours, _ = cv2.findContours(threshed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+ 
+
+if not contours:
+
+_, threshed = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+contours, _ = cv2.findContours(threshed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+ 
+
+if not contours:
+
+return
+
+ 
+
+contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+main_contour = contours[0]
+
+ 
+
+if cv2.contourArea(main_contour) < 500:
+
+return
+
+ 
+
+x, y, w_box, h_box = cv2.boundingRect(main_contour)
+
+ 
+
+pad = 3
+
+x = max(x - pad, 0)
+
+y = max(y - pad, 0)
+
+w_box = min(w_box + 2*pad, w - x)
+
+h_box = min(h_box + 2*pad, h - y)
+
+ 
+
+cropped = original[y:y+h_box, x:x+w_box]
+
+ 
+
+if output_path is None:
+
+base, ext = os.path.splitext(image_path)
+
+output_path = f"{base}_TIGHT_CROPPED{ext}"
+
+cv2.imwrite(output_path, cropped)
+
+ 
+
+if show_steps:
+
+plt.figure(figsize=(15, 8))
+
+ 
+
+plt.subplot(2, 3, 1)
+
+plt.imshow(cv2.cvtColor(original, cv2.COLOR_BGR2RGB))
+
+plt.title("Original")
+
+plt.axis('off')
+
+ 
+
+plt.subplot(2, 3, 2)
+
+plt.imshow(gray, cmap='gray')
+
+plt.title("Grayscale")
+
+plt.axis('off')
+
+ 
+
+plt.subplot(2, 3, 3)
+
+plt.imshow(threshed, cmap='gray')
+
+plt.title("Thresholded")
+
+plt.axis('off')
+
+ 
+
+plt.subplot(2, 3, 4)
+
+mask = np.zeros_like(gray)
+
+cv2.drawContours(mask, [main_contour], -1, 255, 2)
+
+plt.imshow(mask, cmap='gray')
+
+plt.title("Main Contour")
+
+plt.axis('off')
+
+ 
+
+plt.subplot(2, 3, 5)
+
+debug = original.copy()
+
+cv2.rectangle(debug, (x, y), (x+w_box, y+h_box), (0, 255, 0), 2)
+
+plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
+
+plt.title("Bounding Box")
+
+plt.axis('off')
+
+ 
+
+plt.subplot(2, 3, 6)
+
+plt.imshow(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
+
+plt.title("FINAL CROPPED")
+
+plt.axis('off')
+
+ 
+
+plt.tight_layout()
+
+plt.show()
+
+ 
+
+return output_path
+
+ 
+
+uploaded = files.upload()
+
+ 
+
+if uploaded:
+
+img_name = list(uploaded.keys())[0]
+
+ 
+
+cropped_path = robust_auto_crop(img_name, show_steps=True)
+
+ 
+
+if cropped_path and os.path.exists(cropped_path):
+
+files.download(cropped_path)
+
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ 
+
+Now I believe I need to do the following;
+
+1) Find the .py file for the model, but before that what model do i choose see the table .....?? and match it to our task
+
+answer ) It is ResNet-34 and here are the specifications
+
+                         Source | Tutorial | Input (H,W,C) | V1000 FPS | Task | Metric | TFLITE | VNNX
+
+                          onnx |onnx_resnet34-v1 | [224, 224, 3] |17.8 | classification  | Top1  |72.6 |72.2
+
+2) Train the .py with the kaggle dataset (its crops of defected cardboard (one face in the frame at a time, pretty solid dataset!) 
+
+3) Then save the trained model as onnx
+
+4) Take a subset of the dataset and run the calibration python script from here - https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/python/vbx/vbx/generate/generate_npy.py
+
+5) proceed with the VBX bash file where ill have to edit in the paths/files with the calibrated numpy file and the model trained on our kaggle dataset, then it will auto proceed with the onnx-tf-tflite-vnnx conversion i hope
+
+6) We need to fix up our dataset by having both defective and normal in order to classify 
+
+Important reference files : 
+
+
+1)  https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/python/vbx/vbx/generate/generate_npy.py
+
+2) 
+ 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+
+Creative things to do with Asymmetric Multiprocessing (AMP) in context to our project???

@@ -1,3 +1,25 @@
+so our conveyor dimensions are 70mm width and 270mm length
+we need to ensure our cardboard boxes are 50mmX50mmx20mm dimensions which we are making our own
+we aim to have defect detection, then a classification, within it there are 3 sub categories
+the three categories are dent, tear, dent+tear
+once we are able to classify a defect, we then need to find the degree of defect
+we have QR codes on the top face which will encode product type (like level of fragility)and product ID (to help us flag it)
+we ideally need to place the camera at 15 cm mark (putting 2 conveyor belts back to back gives us 54cm length)
+meaning we can place 2-3 of our boxes (each being 5cm long so keeping a separation of 10 cm we get 10+5+10+5+10+5 read this right to left to get what i mean :) 
+then once camera captures the first box, it has roughly 50-15cm = 35cm - 2cm buffer = 33cm length to travel while inference occurs 
+we will have a linear velocity of the belt somehow to be 5cm/s so we will get roughly 3-5 seconds to make an inference and make the ultrasonic and servo active
+
+what problems we faced while discussing, 
+  what if QR code gets damaged, how will we proceed? whats the fallback/ way to flag it?
+  
+
+
+
+
+
+
+
+
 Primary Task : Post Packaging Quality Control (Rejection based on degree of damage)
 
 How are we approaching it?

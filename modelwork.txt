@@ -15,7 +15,7 @@ what problems we faced while discussing,
 
   so what should our dataset size be, for non defective and defective so that resnet can decently learn a variety of features and classify accurately
 
-  can i train resnet model (untrained) with my dataste, which I will make by taking pictures of cardboard boxes and doing different kinds and amount of damage, mostly would involve  a side dent, a face dent (remember the camera always faces from top to bottom on the top face, where the qr code is also stuck), a side+face dent, a side tear, a face tear, a face+side tear, a side dent+face tear, a face tear + face dent, ..... , so what size of dataset?! 
+  can i train resnet model (untrained) with my dataset, which I will make by taking pictures of cardboard boxes and doing different kinds and amount of damage, mostly would involve  a side dent, a face dent (remember the camera always faces from top to bottom on the top face, where the qr code is also stuck), a side+face dent, a side tear, a face tear, a face+side tear, a side dent+face tear, a face tear + face dent, ..... , so what size of dataset?! 
 
   how big should the dataset of the "non defective" class be, because after all the boxes are of same size and non defective in itself is straightforward right?, but regarding the defective class we have the following classes {dents, tears} and of two forms {side, face}, making around {side dent only, side tear only, face dent only, face tear only, side tear face dent, face tear side dent, side dent side tear, face dent face tear} so how do i approach about this? and i forgot to consider QR damage, which too would come in two forms; tear on QR and dent on QR. so in totality we will have these many labels, let QR be on bottom left part of the box, so many labels is that??
 
@@ -49,6 +49,11 @@ what problems we faced while discussing,
 
 I have generated QR for these tags; a QR code that opens a photo (jpeg) showing "product ID and product type" so i got 10 QR codes generated, like product ID = 1,2,3,4,5 ... and product type = " extremely fragile, partially fragile, partially solid, extremely solid"
 
+Now we need to clarify that while constructing the dataset we will i think need to take a bunch of boxes and add QR that i generated above and stick it on the cardboard, then try taking photos of it from perfect 90 degree top view, and here's the issue, will the effect by zooming I set in my phone which ill use to create the dataset and by physically trying to "achieve" zoom by bringing the phone closer, so how does that affect the training and accuracy and robustness?
+
+Ideally the camera clicks a frame, then comes another query regarding the zoom, but let's just say that we have applied some zoom to ensure we are not captuing too much and just enough to have the box face occupy most of the frame, but for a safe side we will need to run some preprocessing where it crops the face of the cardboard (in any condition; with/without defect, remember defect can be severe, like a massive tear, so such edge cases how will it handle, like suppose it just made a crop incorrectly so model will train very weakly, and it becomes very randomized training), but again let's say that our preprocessing somehow captures the box face well and 
+
+
 Now comes the parameters that are fixed and variable, which I think would affect how we construct the dataset itself 
 
 
@@ -57,8 +62,9 @@ Fixed parameters/Conditions :
 
 Speed at which the conveyor moves, we will add a motor driver (need to do some wire trimings lmao)
 Our cardboard box dimension is fixed
-Our camera's height and zoom (now we need to clarify that while constructing the dataset we will take random 
+Our camera's height and zoom, in the sense the zoom and height at which camera is placed is fixed 
 The combination of defects we produce on the training and validation dataset
+The orientation in which the boxes flow on the belt, all of them would be ideally be perfectly aligned to be straight always
 
 
 

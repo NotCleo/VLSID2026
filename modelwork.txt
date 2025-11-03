@@ -19,35 +19,55 @@ what problems we faced while discussing,
 
   how big should the dataset of the "non defective" class be, because after all the boxes are of same size and non defective in itself is straightforward right?, but regarding the defective class we have the following classes {dents, tears} and of two forms {side, face}, making around {side dent only, side tear only, face dent only, face tear only, side tear face dent, face tear side dent, side dent side tear, face dent face tear} so how do i approach about this? and i forgot to consider QR damage, which too would come in two forms; tear on QR and dent on QR. so in totality we will have these many labels, let QR be on bottom left part of the box, so many labels is that??
 
-Side dent (QR not affected)
-Side tear (QR not affected)
-Face dent (QR not affected)
-Face tear (QR not affected)
-QR dent only
-QR tear only
-Side dent + Face dent (QR not affected)
-Side tear + Face tear (QR not affected)
-Side dent + Face tear (QR not affected)
-Side tear + Face dent (QR not affected)
-Side dent + QR dent
-Side tear + QR tear
-Face dent + QR dent
-Face tear + QR tear
-Side dent + QR tear (QR affected by tear, side by dent)
-Side tear + QR dent (QR affected by dent, side by tear)
-Face dent + QR tear
-Face tear + QR dent
-Side dent + Face dent + QR dent
-Side tear + Face tear + QR tear
-Side dent + Face tear + QR dent
-Side dent + Face tear + QR tear
-Side tear + Face dent + QR dent
-Side tear + Face dent + QR tear
-Side dent affecting QR + Face tear not affecting QR
-Side tear affecting QR + Face dent not affecting QR
+      Side dent (QR not affected)
+      Side tear (QR not affected)
+      Face dent (QR not affected)
+      Face tear (QR not affected)
+      QR dent only
+      QR tear only
+      Side dent + Face dent (QR not affected)
+      Side tear + Face tear (QR not affected)
+      Side dent + Face tear (QR not affected)
+      Side tear + Face dent (QR not affected)
+      Side dent + QR dent
+      Side tear + QR tear
+      Face dent + QR dent
+      Face tear + QR tear
+      Side dent + QR tear (QR affected by tear, side by dent)
+      Side tear + QR dent (QR affected by dent, side by tear)
+      Face dent + QR tear
+      Face tear + QR dent
+      Side dent + Face dent + QR dent
+      Side tear + Face tear + QR tear
+      Side dent + Face tear + QR dent
+      Side dent + Face tear + QR tear
+      Side tear + Face dent + QR dent
+      Side tear + Face dent + QR tear
+      Side dent affecting QR + Face tear not affecting QR
+      Side tear affecting QR + Face dent not affecting QR
 
 
 I have generated QR for these tags; a QR code that opens a photo (jpeg) showing "product ID and product type" so i got 10 QR codes generated, like product ID = 1,2,3,4,5 ... and product type = " extremely fragile, partially fragile, partially solid, extremely solid"
+
+Now comes the parameters that are fixed and variable, which I think would affect how we construct the dataset itself 
+
+
+
+Fixed parameters/Conditions : 
+
+Speed at which the conveyor moves, we will add a motor driver (need to do some wire trimings lmao)
+Our cardboard box dimension is fixed
+Our camera's height and zoom (now we need to clarify that while constructing the dataset we will take random 
+The combination of defects we produce on the training and validation dataset
+
+
+
+
+Variable Parameters/Condtions :
+
+The lighting conditions under which our camera will operate under
+The ....
+
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

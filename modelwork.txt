@@ -1,27 +1,21 @@
 Summary of doubts
-(in regards to this pipeline; make 5cmx5xmx2cm (LxBxH) cardboard boxes, make (generate via a python script) and stick QR codes that encode {product ID, product fragility type} in which we only have 5 product ID's and 2 levels of fragility ; {{1,2,3,4,5}, {low, high}}, QR codes would generally be present in any one of the four corners, then we defined different defect 
+(in regards to this pipeline; make 5cmx5xmx2cm (LxBxH) cardboard boxes, make (generate via a python script) and stick QR codes that encode {product ID, product fragility type} in which we only have 5 product ID's and 2 levels of fragility ; {{1,2,3,4,5}, {low, high}}, QR codes would generally be present in any one of the four corners, then we defined different defect classes as follows; first we can have two kinds {dent, tear} at the positions; {side (border of the top face along the boundary, not to be confused by side faces), face tear (the top face captured)} and also can occur on QR or not, then once we have plenty images all taken in almost same lighting conditions and height, I guess we will try very hard to keep the camera height, angle, and zoom fixed during data collection and similar during deployment, now we have all the images, now i guess we will have to train a raw untrained resnet on our images, or even run transfer learning training in parallel and check which one works, so save the trained model(models) as onnx, then in the bash file as seen for the SDK, replace with our model, and caliberation dataset and it should do the rest i believe....)
 
-
-so our conveyor dimensions are 70mm width and 270mm length
-we need to ensure our cardboard boxes are 50mmX50mmx20mm dimensions which we are making our own
-we aim to have defect detection, then a classification, within it there are 3 sub categories
-the three categories are dent, tear, dent+tear
-once we are able to classify a defect, we then need to find the degree of defect
-we have QR codes on the top face which will encode product type (like level of fragility)and product ID (to help us flag it)
-we ideally need to place the camera at 15 cm mark (putting 2 conveyor belts back to back gives us 54cm length)
-meaning we can place 2-3 of our boxes (each being 5cm long so keeping a separation of 10 cm we get 10+5+10+5+10+5 read this right to left to get what i mean :), but for demo sakes, we will place only one box per pass, and let it complete the entire stretch and show that yes our model and demo works then to step it up we will 
-then once camera captures the first box, it has roughly 50-15cm = 35cm - 2cm buffer = 33cm length to travel while inference occurs 
-we will have a linear velocity of the belt somehow to be 5cm/s so we will get roughly 3-5 seconds to make an inference and make the ultrasonic and servo active
+1) Our conveyor dimensions are 70mm width and 270mm length
+2) We need to ensure our cardboard boxes are 50mmX50mmx20mm (LxBxH) dimensions which we are making of our own
+3) we aim to have defect detection, then a classification, within it there are sub categories 
+4) We have QR codes on the top face which will encode product type (like level of fragility)and product ID (to help us flag it)
+5) We ideally need to place the camera at 15 cm mark (putting 2 conveyor belts back to back gives us 54cm length)
+6) Once camera captures the first box, it has roughly 50-15cm = 35cm - 2cm buffer = 33cm length to travel while inference occurs 
+7) We will have a linear velocity of the belt somehow to be 5cm/s so we will get roughly 3-6 seconds to make an inference and make the servo active based on the decision
 
 what problems we faced while discussing, 
 
-  what if QR code gets damaged, how will we proceed? whats the fallback/ way to flag it?
+1) what if QR code gets damaged, how will we proceed? whats the fallback/ way to flag it?
 
-  so what should our dataset size be, for non defective and defective so that resnet can decently learn a variety of features and classify accurately
+2) What should our dataset size be, for non defective and defective so that resnet can decently learn a variety of features and classify accurately
 
-  can i train resnet model (untrained) with my dataset, which I will make by taking pictures of cardboard boxes and doing different kinds and amount of damage, mostly would involve  a side dent, a face dent (remember the camera always faces from top to bottom on the top face, where the qr code is also stuck), a side+face dent, a side tear, a face tear, a face+side tear, a side dent+face tear, a face tear + face dent, ..... , so what size of dataset?! 
-
-  how big should the dataset of the "non defective" class be, because after all the boxes are of same size and non defective in itself is straightforward right?, but regarding the defective class we have the following classes {dents, tears} and of two forms {side, face}, making around {side dent only, side tear only, face dent only, face tear only, side tear face dent, face tear side dent, side dent side tear, face dent face tear} so how do i approach about this? and i forgot to consider QR damage, which too would come in two forms; tear on QR and dent on QR. so in totality we will have these many labels, let QR be on bottom left part of the box, so many labels is that??
+3) How big should the dataset of the "non defective" class be, because after all the boxes are of same face dimensions, under same lighting conditons, only the orientation (along z axis) is different and non defective in itself is straightforward right?, but regarding the defective class we have the following classes {dents, tears} and of two forms {side, face}, making around {side dent only, side tear only, face dent only, face tear only, side tear face dent,...} so how do i approach about this? and i have not mentioned yet, we need to consider QR damage, which too would come in two forms; tear on QR and dent on QR. so in totality we will have these many labels, let QR be on on any one of the corner part of the box, so many labels is that??
 
       Side dent (QR not affected) 
       Side tear (QR not affected)
@@ -50,17 +44,21 @@ what problems we faced while discussing,
       Side dent affecting QR + Face tear not affecting QR
       Side tear affecting QR + Face dent not affecting QR
 
-
-I have generated QR for these tags; a QR code that opens a photo (jpeg) showing "product ID and product type" so i got 10 QR codes generated, like product ID = 1,2,3,4,5 ... and product type = " extremely fragile, partially fragile, partially solid, extremely solid"
-
-Now we need to clarify that while constructing the dataset we will i think need to take a bunch of boxes and add QR that i generated above and stick it on the cardboard, then try taking photos of it from perfect 90 degree top view, and here's the issue, will the effect by zooming I set in my phone which ill use to create the dataset and by physically trying to "achieve" zoom by bringing the phone closer, so how does that affect the training and accuracy and robustness?
-
-Ideally the camera clicks a frame, then comes another query regarding the zoom, but let's just say that we have applied some zoom to ensure we are not captuing too much and just enough to have the box face occupy most of the frame, but for a safe side we will need to run some preprocessing where it crops the face of the cardboard (in any condition; with/without defect, remember defect can be severe, like a massive tear, so such edge cases how will it handle, like suppose it just made a crop incorrectly so model will train very weakly, and it becomes very randomized training), but again let's say that our preprocessing somehow captures the box face well and passes it to the bare resnet to train on, how many images of each category should we give in order to ensure the model learns the feature deep enough to be accurate, then let's say we have around 2-4 seconds between the image captured, processing, inference and the decision to reject based on defect or not, but during the processing, there's another layer of complexity, which is, finding the degree of defect, we plan to have two-three degree of defect; {low, high} or {low, medium, high}, i'll take just two levels for simplicity, that's around 116 cases!! so now how many images and given we create 3 lighting conditions {low, medium, high} (now can we just change the exposure of the camera or a physical light source has to be used to create different lighting conditions? or will adding an uniform light source which is constantly on help? now i have a doubt, will adding the degree of damage label affect how my inference works, like i essentially need this;
+4) How to introduce a mapping between degree of damage and product fragility information? without explicitly having different labels while training and physcially creating it on the boxes?
 
 take image -> process to have just top face cardboard -> model checks if damage is there or not, if damage found, what kind/kinds of damage?, [then what level of damage or degree of damages; ignore this] -> give a score -> compare with threshold for different kind/kinds and apply the interrupt to reject via the servo
 
-very complicated mapping between "what kinds of damage on the box" v/s "how much % of damage in each kind" v/s "what's the product's fragility status inside the box"!!!
+We originally wanted to try the very complicated mapping between "what kinds of damage on the box" v/s "how much % of damage in each kind" v/s "what's the product's fragility status inside the box"!!!
 
+Another serious doubt; say we are making a dataset from scratch and i use my phone camera to take pictures of cardboard boxes, while doing so i set some zoom like 2x to try to capture majority of the cardboard face in the frame, then i fixed the phone at 2m lets say and kept taking pictures then train the model with these images, then when i give it an image which was taken in these conditions, where i didnt do zoom but 1x and physically moved the camera closer to mimic "try to capture majority of the cardboard face in the frame" so how does that affect the inference? so regarding this;
+
+    So your model trained on the “zoomed” images will see different geometric relationships (less perspective, flatter surface), whereas the test images shot closer will have different spatial distortions — even if both occupy same area in frame.
+    
+    I guess we will have to "Keep camera height, angle, and zoom fixed during data collection and deployment."
+    
+    For small zoom changes (1× ↔ 1.2×) and distances ~10–30 cm, CNNs usually tolerate it fine — especially if you include augmentation (random scaling, cropping).
+    But a change from 2× optical to 1× close-up can be equivalent to 20–30 % difference in perspective distortion, which is noticeable unless the network saw both cases in training.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Now comes the parameters that are fixed and variable, which I think would affect how we construct the dataset itself 
 
 Fixed parameters/Conditions : 
@@ -77,7 +75,7 @@ just the orientation of how the boxes are along the z -axis (like rotation)
 
 For now we are time constrained so we are not feeding degree of defect classes to the model just defect type classes, so how do we proceed?
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Primary Task : Post Packaging Quality Control (Rejection based on degree of damage)
 
@@ -147,11 +145,13 @@ echo "\$VBX_SDK not set. Please run 'source setup_vars.sh' from the SDK's root f
 fi
 source $VBX_SDK/vbx_env/bin/activate
 
+<we need to set up calibration data file for our dataset here, by using the generate_npy python script>
 echo "Checking for Numpy calibration data file..."
 if [ ! -f $VBX_SDK/tutorials/imagenetv2_rgb_norm_20x224x224x3.npy ]; then
 generate_npy $VBX_SDK/tutorials/imagenetv2_rgb_20x224x224x3.npy -o $VBX_SDK/tutorials/imagenetv2_rgb_norm_20x224x224x3.npy -s 224 224 --norm
 fi
 
+<we need to then give our onnx resnet here, either the untrained one trained from scratch or the transfer learning learnt model, we will test and take the best onnx>
 echo "Checking for onnx_resnet18-v1 files..."
 if [ ! -f onnx_resnet18-v1.tflite ]; then
 # model details @ https://github.com/onnx/models/tree/main/validated/vision/classification/resnet

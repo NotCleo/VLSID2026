@@ -44,6 +44,10 @@ what problems we faced while discussing,
       Side dent affecting QR + Face tear not affecting QR
       Side tear affecting QR + Face dent not affecting QR
 
+
+NOTE : Regarding QR codes, we need to figure out on what our fallback is, I suppose it should be that whether QR was found or not we can set that as a flag in itself
+NOTE : Regarding QR Codes, we need to set up what amount of damage is acceptable even on QR codes 
+
 4) How to introduce a mapping between degree of damage and product fragility information? without explicitly having different labels while training and physcially creating it on the boxes?
 
 take image -> process to have just top face cardboard -> model checks if damage is there or not, if damage found, what kind/kinds of damage?, [then what level of damage or degree of damages; ignore this] -> give a score -> compare with threshold for different kind/kinds and apply the interrupt to reject via the servo
@@ -58,6 +62,7 @@ Another serious doubt; say we are making a dataset from scratch and i use my pho
     
     For small zoom changes (1× ↔ 1.2×) and distances ~10–30 cm, CNNs usually tolerate it fine — especially if you include augmentation (random scaling, cropping).
     But a change from 2× optical to 1× close-up can be equivalent to 20–30 % difference in perspective distortion, which is noticeable unless the network saw both cases in training.
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Now comes the parameters that are fixed and variable, which I think would affect how we construct the dataset itself 
 

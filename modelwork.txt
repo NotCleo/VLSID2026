@@ -1,3 +1,7 @@
+Summary of doubts
+(in regards to this pipeline; make 5cmx5xmx2cm (LxBxH) cardboard boxes, make (generate via a python script) and stick QR codes that encode {product ID, product fragility type} in which we only have 5 product ID's and 2 levels of fragility ; {{1,2,3,4,5}, {low, high}}, QR codes would generally be present in any one of the four corners, then we defined different defect 
+
+
 so our conveyor dimensions are 70mm width and 270mm length
 we need to ensure our cardboard boxes are 50mmX50mmx20mm dimensions which we are making our own
 we aim to have defect detection, then a classification, within it there are 3 sub categories
@@ -53,12 +57,11 @@ Now we need to clarify that while constructing the dataset we will i think need 
 
 Ideally the camera clicks a frame, then comes another query regarding the zoom, but let's just say that we have applied some zoom to ensure we are not captuing too much and just enough to have the box face occupy most of the frame, but for a safe side we will need to run some preprocessing where it crops the face of the cardboard (in any condition; with/without defect, remember defect can be severe, like a massive tear, so such edge cases how will it handle, like suppose it just made a crop incorrectly so model will train very weakly, and it becomes very randomized training), but again let's say that our preprocessing somehow captures the box face well and passes it to the bare resnet to train on, how many images of each category should we give in order to ensure the model learns the feature deep enough to be accurate, then let's say we have around 2-4 seconds between the image captured, processing, inference and the decision to reject based on defect or not, but during the processing, there's another layer of complexity, which is, finding the degree of defect, we plan to have two-three degree of defect; {low, high} or {low, medium, high}, i'll take just two levels for simplicity, that's around 116 cases!! so now how many images and given we create 3 lighting conditions {low, medium, high} (now can we just change the exposure of the camera or a physical light source has to be used to create different lighting conditions? or will adding an uniform light source which is constantly on help? now i have a doubt, will adding the degree of damage label affect how my inference works, like i essentially need this;
 
-take image -> process to have just top face cardboard -> model checks if damage is there or not, if damage found, what kind/kinds of damage?, then what level of damage or degree of damages -> give a score -> 
+take image -> process to have just top face cardboard -> model checks if damage is there or not, if damage found, what kind/kinds of damage?, [then what level of damage or degree of damages; ignore this] -> give a score -> compare with threshold for different kind/kinds and apply the interrupt to reject via the servo
 
+very complicated mapping between "what kinds of damage on the box" v/s "how much % of damage in each kind" v/s "what's the product's fragility status inside the box"!!!
 
 Now comes the parameters that are fixed and variable, which I think would affect how we construct the dataset itself 
-
-
 
 Fixed parameters/Conditions : 
 
@@ -68,17 +71,13 @@ Our camera's height and zoom, in the sense the zoom and height at which camera i
 The combination of defects we produce on the training and validation dataset
 The orientation in which the boxes flow on the belt, all of them would be ideally be perfectly aligned to be straight always
 
-
-
-
 Variable Parameters/Condtions :
 
-The lighting conditions under which our camera will operate under
-The ....
+just the orientation of how the boxes are along the z -axis (like rotation)
 
+For now we are time constrained so we are not feeding degree of defect classes to the model just defect type classes, so how do we proceed?
 
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Primary Task : Post Packaging Quality Control (Rejection based on degree of damage)
 
@@ -88,33 +87,33 @@ if i have a custom dataset of just top view images of cardboard boxes
  
 1) each image has one cardboard box from top view (90 degree) top down
 2) cardboard may or may not be in same orientation in terms of rotation
-3) cardboard boxes are off different dimensions and not necessarily same (in terms of length and breadth when observed from top
-4) the face of box which the camera captures may or may not have some text/printed illustration on it
+3) cardboard boxes are off same dimensions (in terms of length and breadth of top face when observed from top)
+4) the face of box which the camera captures will not have some text/printed illustration on it
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-The task : (According to the dataset currently available)
+The task : (According to the dataset which we plane to make)
 
 (a) detect the cardboard box in the image frame captured
 (b) generate a crop of that cardboard box standalone 
-(c) run a model to detect defects (tears, cavities/holes, dents/depression in surface, bulged surface) (by surface i mean the surface captured by the camera)
-(d) after any of the following defect is detected, it should classify the degree of defect and type of defect
+(c) run a model to detect defects (tears, dents/depression in surface of the top face that's being captured) 
+(d) after any of the following defect is detected, it should give a "score/decision using which we reject or not, (basically classify presence of defect, but idk how will we introduct "degree of defect" in this work, and use it too, but again for now focus on detecting damage)
 
 I feel atleast till step b we can pull it off with some opencv edge detection and thresholding
 
 then for step c we need to run the model!!
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Continued task : Once primary task dataset (as described above but with a QR code attached) is created for the task described below, we will perform:
 
-(a) The face of the cardboard box captured will have a QR/Bardcode which encodes information regarding the inside contents such as degree of fragility (0.1 meaning its absolutely fragile and any damage on the cardboard packaging box will damage the package, 0.9 meaning it's a solid package and the packaging being damaged is not affected even for a high degree of damage)
+(a) The face of the cardboard box captured will have a QR/Bardcode which encodes information regarding the inside contents such as degree of fragility of product and product ID (i have generated the QR's and will stick it in the cardboard boxes we will make)
 
-(b) Essentially, we need to perform; f : (degree of damage/defect, degree of fragility) -> (rejection score)
+(b) Essentially, we need to perform; f : (types of damages found, degree of damage for each kind of damage, degree of fragility of product) -> (rejection decision) but like before i think we will first need to get something simpler done first, f : (types of damages found, degree of fragility of product) -> (rejection decision)
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-We have a vectorblox SDK which performs PTQ of fp16-> int8 on popular TF models and in that we want to proceed with ONNX models;
+We have a vectorblox SDK which performs PTQ of fp16-> int8 on popular TF models and in that we want to proceed with ONNX models that will run in our Microchip FPGA
 
 Source | Tutorial | Input (H,W,C) | V1000 FPS | Task | Metric | TFLITE | VNNX
 onnx |onnx_resnet18-v1| [224, 224, 3] |32.7| classification |Top1 |69.3| 68.8
@@ -125,10 +124,9 @@ onnx |yolov7 |[640, 640, 3] |1.0 |object detection |mAP⁵⁰⁻⁹⁵ |x|x
 onnx |yolov9-s| [640, 640, 3] |3.9 | object detection| mAP⁵⁰⁻⁹⁵| x|x
 onnx |yolov9-m| [640, 640, 3] |1.2 |object detection |mAP⁵⁰⁻⁹⁵ |x|x
 
-Here's what the SDK does for yolov7;
+Here's an example from the SDK, does for yolov7;
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ##########################################################
 # _ __ __ ____ __ #
@@ -186,305 +184,49 @@ fi
 
 deactivate
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 In short we have the following actions happening,
 
 SDK Downloads and converts a trained YOLOv7 model to ONNX → TensorFlow → TFLite → VNNX.
-
- 
 
 So the following doubts;
 
 1) What model fits our specific task the best? or do you suggest a different model altogether?
 2) how to generate NumPy calibration data file for quantization, which is custom to our dataset and not ImageNet/Coco dataset on which the models have been trained 
 3) I think we need to first train yolo/resnet with our dataset and save it as a onnx, then apply the bash file, updated wget with our trained model, and then update the calibration dataset (.npy file) tailored for our dataset 
-4) .....
+4) ..... done right?
 
 
 
 How to generate the vectorblox IP (V250!)
-
-1) ssh into our container
-2) at /home/joeld, the VectorBlox SDK has already been cloned 
-3) cd into /home/joeld/VectorBlox-SDK/ and run "bash install_dependencies.sh"
-4) In the same directory run "source setup_vars.sh"
-5) Confirm whether the virtual environment has been configured and activated
-6) cd $VBX_SDK/tutorials/{network_source}/{network} (for example; cd $VBX_SDK/tutorials/onnx/yolov7)
-7) bash {network}.sh (for example; bash yolov7.sh) 
-8) before running (7) we need to ensure our build flags is set to V250 and not V1000
-
-
+        1) ssh into our container
+        2) at /home/joeld, the VectorBlox SDK has already been cloned 
+        3) cd into /home/joeld/VectorBlox-SDK/ and run "bash install_dependencies.sh"
+        4) In the same directory run "source setup_vars.sh"
+        5) Confirm whether the virtual environment has been configured and activated
+        6) cd $VBX_SDK/tutorials/{network_source}/{network} (for example; cd $VBX_SDK/tutorials/onnx/yolov7)
+        7) bash {network}.sh (for example; bash yolov7.sh) 
+        8) before running (7) we need to ensure our build flags is set to V250 and not V1000
 The VBXIP gets compiled and creates .vnnx, .hex and a lot many files
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-To proceed, 
-
-I first want to set up a python script that takes in images of cardboard box in a tray and atleast saves the crop of only the box (the face of the box standalone in the image frame captured) - see cardboard_face_crop.py for this -  It worked
-
-
-Kaggle dataset already had the images as crops!! so just generating a npy file directly from 
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-So my preprocessing script is ready
-
-
-import cv2
-
-import numpy as np
-
-from google.colab import files
-
-from IPython.display import Image, display
-
-import matplotlib.pyplot as plt
-
-import os
-
- 
-
-def robust_auto_crop(image_path, output_path=None, show_steps=False):
-
-img = cv2.imread(image_path)
-
-if img is None:
-
-print("Error loading image!")
-
-return
-
- 
-
-original = img.copy()
-
-h, w = img.shape[:2]
-
- 
-
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
- 
-
-blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-
- 
-
-threshed = cv2.adaptiveThreshold(
-
-blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-
-cv2.THRESH_BINARY_INV, 11, 2
-
-)
-
- 
-
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-
-threshed = cv2.morphologyEx(threshed, cv2.MORPH_CLOSE, kernel, iterations=2)
-
-threshed = cv2.morphologyEx(threshed, cv2.MORPH_OPEN, kernel, iterations=1)
-
- 
-
-contours, _ = cv2.findContours(threshed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
- 
-
-if not contours:
-
-_, threshed = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-
-contours, _ = cv2.findContours(threshed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
- 
-
-if not contours:
-
-return
-
- 
-
-contours = sorted(contours, key=cv2.contourArea, reverse=True)
-
-main_contour = contours[0]
-
- 
-
-if cv2.contourArea(main_contour) < 500:
-
-return
-
- 
-
-x, y, w_box, h_box = cv2.boundingRect(main_contour)
-
- 
-
-pad = 3
-
-x = max(x - pad, 0)
-
-y = max(y - pad, 0)
-
-w_box = min(w_box + 2*pad, w - x)
-
-h_box = min(h_box + 2*pad, h - y)
-
- 
-
-cropped = original[y:y+h_box, x:x+w_box]
-
- 
-
-if output_path is None:
-
-base, ext = os.path.splitext(image_path)
-
-output_path = f"{base}_TIGHT_CROPPED{ext}"
-
-cv2.imwrite(output_path, cropped)
-
- 
-
-if show_steps:
-
-plt.figure(figsize=(15, 8))
-
- 
-
-plt.subplot(2, 3, 1)
-
-plt.imshow(cv2.cvtColor(original, cv2.COLOR_BGR2RGB))
-
-plt.title("Original")
-
-plt.axis('off')
-
- 
-
-plt.subplot(2, 3, 2)
-
-plt.imshow(gray, cmap='gray')
-
-plt.title("Grayscale")
-
-plt.axis('off')
-
- 
-
-plt.subplot(2, 3, 3)
-
-plt.imshow(threshed, cmap='gray')
-
-plt.title("Thresholded")
-
-plt.axis('off')
-
- 
-
-plt.subplot(2, 3, 4)
-
-mask = np.zeros_like(gray)
-
-cv2.drawContours(mask, [main_contour], -1, 255, 2)
-
-plt.imshow(mask, cmap='gray')
-
-plt.title("Main Contour")
-
-plt.axis('off')
-
- 
-
-plt.subplot(2, 3, 5)
-
-debug = original.copy()
-
-cv2.rectangle(debug, (x, y), (x+w_box, y+h_box), (0, 255, 0), 2)
-
-plt.imshow(cv2.cvtColor(debug, cv2.COLOR_BGR2RGB))
-
-plt.title("Bounding Box")
-
-plt.axis('off')
-
- 
-
-plt.subplot(2, 3, 6)
-
-plt.imshow(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
-
-plt.title("FINAL CROPPED")
-
-plt.axis('off')
-
- 
-
-plt.tight_layout()
-
-plt.show()
-
- 
-
-return output_path
-
- 
-
-uploaded = files.upload()
-
- 
-
-if uploaded:
-
-img_name = list(uploaded.keys())[0]
-
- 
-
-cropped_path = robust_auto_crop(img_name, show_steps=True)
-
- 
-
-if cropped_path and os.path.exists(cropped_path):
-
-files.download(cropped_path)
-
- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
- 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Now I believe I need to do the following;
 
 1) Find the .py file for the model, but before that what model do i choose see the table .....?? and match it to our task
-
-answer ) It is ResNet-34 and here are the specifications
+answer) I believe, It is ResNet-34 and here are the specifications
 
                          Source | Tutorial | Input (H,W,C) | V1000 FPS | Task | Metric | TFLITE | VNNX
+                         onnx |onnx_resnet34-v1 | [224, 224, 3] |17.8 | classification  | Top1  |72.6 |72.2
 
-                          onnx |onnx_resnet34-v1 | [224, 224, 3] |17.8 | classification  | Top1  |72.6 |72.2
-
-2) Train the .py with the kaggle dataset (its crops of defected cardboard (one face in the frame at a time, pretty solid dataset!) 
-
+2) Train the .py of just the bare ResNet untrained model with the dataset we make  
 3) Then save the trained model as onnx
-
 4) Take a subset of the dataset and run the calibration python script from here - https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/python/vbx/vbx/generate/generate_npy.py
-
 5) proceed with the VBX bash file where ill have to edit in the paths/files with the calibrated numpy file and the model trained on our kaggle dataset, then it will auto proceed with the onnx-tf-tflite-vnnx conversion i hope
-
-6) We need to fix up our dataset by having both defective and normal in order to classify 
+6) We need to fix up our dataset by having both defective and normal in order to classify (but again how many of what kinds?)
 
 Important reference files : 
-
-
-1)  https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/python/vbx/vbx/generate/generate_npy.py
-
-2) 
+1) https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/python/vbx/vbx/generate/generate_npy.py
+2) https://github.com/Microchip-Vectorblox/VectorBlox-SDK/blob/master/tutorials/onnx/onnx_resnet34-v1/onnx_resnet34-v1.sh
  
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 
-
-Creative things to do with Asymmetric Multiprocessing (AMP) in context to our project???

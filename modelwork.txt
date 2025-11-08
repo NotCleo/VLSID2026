@@ -7,6 +7,8 @@ We made the cardboard boxes and now we wish to proceed as follows
 5) Then we do parallel training; (a) transfer learning on trained ResNet 34 and (b) cold training an untrained ResNet 34 
 6) Point to note is, both the broad classes must have same amount of photos, like we need to do this split for the size of dataset
 
+(although we do not want to risk this photoshopping qr idea, so im printing them out in case)
+
 Image
 |
 |

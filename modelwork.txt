@@ -1,3 +1,94 @@
+We made the cardboard boxes and now we wish to proceed as follows
+
+1) Make two broad classes {defective, non defective}
+2) For the non-defective class, we will just photoshop a 1.25cmx1.25cm QR code on the surface (ensuring only 9% surface usage) and flatten image to avoid synthetic artifact, or overlay effects on inference
+3) For the defective class, we will have one subclass (where we will use (repurpose actually lol) the images that we already took of a normal looking cardboard but with "no qr/qr ripped off") 
+4) Then while generating the defective class dataset, we will need to actually print out those 1.25cmx1.25cm QR's, stick them, produce different kinds of damages
+5) Then we do parallel training; (a) transfer learning on trained ResNet 34 and (b) cold training an untrained ResNet 34 
+6) Point to note is, both the broad classes must have same amount of photos, like we need to do this split for the size of dataset
+
+Image
+|
+|
+|________Training (100)
+            |
+            |
+            |______Non-defective (100)
+            |
+            |
+            |______Defective (120)
+                        |
+                        |______Side Face Dents (not on QR) (15)
+                        |
+                        |______Side Face Tears (not on QR) (15)
+                        |
+                        |______Main Face Dents (not on QR) (15)
+                        |
+                        |______Main Face Tears (not on QR) (15)
+                        |
+                        |______Side Face Dents (on QR) (15)
+                        |
+                        |______Side Face Tears (on QR) (15)
+                        |
+                        |______Main Face Dents (on QR) (15)
+                        |
+                        |______Main Face Tears (on QR) (15)
+|
+|
+|________Validation (100)
+            |
+            |
+            |______Non-defective (100)
+            |
+            |
+            |______Defective (120)
+                        |
+                        |______Side Face Dents (not on QR) (15)
+                        |
+                        |______Side Face Tears (not on QR) (15)
+                        |
+                        |______Main Face Dents (not on QR) (15)
+                        |
+                        |______Main Face Tears (not on QR) (15)
+                        |
+                        |______Side Face Dents (on QR) (15)
+                        |
+                        |______Side Face Tears (on QR) (15)
+                        |
+                        |______Main Face Dents (on QR) (15)
+                        |
+                        |______Main Face Tears (on QR) (15)
+|
+|
+|_________Testing (30)
+            |
+            |
+            |______Non-defective (14)
+            |
+            |
+            |______Defective (16)
+                        |
+                        |______Side Face Dents (not on QR) (2)
+                        |
+                        |______Side Face Tears (not on QR) (2)
+                        |
+                        |______Main Face Dents (not on QR) (2)
+                        |
+                        |______Main Face Tears (not on QR) (2)
+                        |
+                        |______Side Face Dents (on QR) (2)
+                        |
+                        |______Side Face Tears (on QR) (2)
+                        |
+                        |______Main Face Dents (on QR) (2)
+                        |
+                        |______Main Face Tears (on QR) (2)
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Summary of doubts
 (in regards to this pipeline; make 5cmx5xmx2cm (LxBxH) cardboard boxes, make (generate via a python script) and stick QR codes that encode {product ID, product fragility type} in which we only have 5 product ID's and 2 levels of fragility ; {{1,2,3,4,5}, {low, high}}, QR codes would generally be present in any one of the four corners, then we defined different defect classes as follows; first we can have two kinds {dent, tear} at the positions; {side (border of the top face along the boundary, not to be confused by side faces), face tear (the top face captured)} and also can occur on QR or not, then once we have plenty images all taken in almost same lighting conditions and height, I guess we will try very hard to keep the camera height, angle, and zoom fixed during data collection and similar during deployment, now we have all the images, now i guess we will have to train a raw untrained resnet on our images, or even run transfer learning training in parallel and check which one works, so save the trained model(models) as onnx, then in the bash file as seen for the SDK, replace with our model, and caliberation dataset and it should do the rest i believe....)
 
@@ -63,7 +154,7 @@ Another serious doubt; say we are making a dataset from scratch and i use my pho
     For small zoom changes (1× ↔ 1.2×) and distances ~10–30 cm, CNNs usually tolerate it fine — especially if you include augmentation (random scaling, cropping).
     But a change from 2× optical to 1× close-up can be equivalent to 20–30 % difference in perspective distortion, which is noticeable unless the network saw both cases in training.
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Now comes the parameters that are fixed and variable, which I think would affect how we construct the dataset itself 
 
 Fixed parameters/Conditions : 

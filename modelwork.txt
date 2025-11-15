@@ -9,13 +9,15 @@ We made the cardboard boxes and now we wish to proceed as follows
 
 (although we do not want to risk this photoshopping qr idea, so im printing them out in case)
 
+Now we will have to do a mass testing of whether the QR we added in each image is being decoded accurately + robustly in different poses and lighting (both of which vary by tiny margins)
+
 Image
 |
 |
 |________Training (100)
             |
             |
-            |______Non-defective (100)
+            |______Non-defective (100) ---------------------------------------> DONE DONE DONE
             |
             |
             |______Defective (120)

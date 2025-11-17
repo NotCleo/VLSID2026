@@ -241,6 +241,11 @@ The board is currently running the Ubuntu image from Canonical, which is a gener
 To check OS on the container - cat /etc/os-release
 
 
+While taking and sending files to and fro the GPU via ssh use scp command : 
+
+scp [OPTIONS] [[user@]source_host:]file1 [[user@]dest_host:]file2
+
+
 
 
 

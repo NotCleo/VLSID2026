@@ -107,7 +107,7 @@ def main():
     # -----------------------------
     # MODEL: RESNET34 BACKBONE + NEW CLASSIFIER
     # -----------------------------
-    backbone_model = models.resnet34(weights=models.ResNet34_Weights.DEFAULT)
+    backbone_model = models.resnet34(weights=None)
 
     # Freeze all parameters in the backbone
     for p in backbone_model.parameters():

@@ -1,3 +1,8 @@
+How to count parameters and model (pth) file size (in Bytes) (assume x86-64 bit machine) in any (CNN) neural network (pytorch)?
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
 We made the cardboard boxes and now we wish to proceed as follows
 ----------------------------------------------------------------------------------------------------------------------------------------
 

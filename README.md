@@ -17,6 +17,7 @@ Most visited URLS are
     https://github.com/open-mmlab/mmaction2
     https://github.com/mrdbourke/pytorch-deep-learning
     https://github.com/polarfire-soc/icicle-kit-reference-design/blob/master/diagrams/block_diagram.svg
+    https://microchip.my.site.com/microchip/s/topic/a5CV4000000ApdxMAC/t403864
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------

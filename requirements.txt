@@ -1,0 +1,21 @@
+torch==2.7.1
+torchvision==0.22.1
+
+numpy
+Pillow
+tqdm
+matplotlib
+tensorflow>=2.12,<2.15
+tf2onnx>=1.14.0
+onnx>=1.14.0
+numpy
+pillow
+tensorflow-addons>=0.22.0  
+tensorflow-cpu==2.12.0
+opencv-python==4.8.1.78
+protobuf==3.20.3
+typing_extensions==4.5.0
+
+
+
+NOTE WE HAVE TO SORT THE PACKAGES THAT WERE RUN USING PYTHON 3.10 and PYTHON 3.13, as TENSORFLOW IS NOT SUPPORTED FOR PYTHON 3.13

@@ -335,7 +335,7 @@ So the following doubts;
 3) I think we need to first train yolo/resnet with our dataset and save it as a onnx, then apply the bash file, updated wget with our trained model, and then update the calibration dataset (.npy file) tailored for our dataset 
 
 
-How to generate the vectorblox IP (V1000!)
+How to generate the vectorblox IP (V500!)
         1) ssh into our container
         2) at /home/joeld, the VectorBlox SDK has already been cloned 
         3) cd into /home/joeld/VectorBlox-SDK/ and run "bash install_dependencies.sh"
@@ -343,7 +343,7 @@ How to generate the vectorblox IP (V1000!)
         5) Confirm whether the virtual environment has been configured and activated
         6) cd $VBX_SDK/tutorials/{network_source}/{network} (for example; cd $VBX_SDK/tutorials/onnx/yolov7)
         7) bash {network}.sh (for example; bash yolov7.sh) 
-        8) before running (7) we need to ensure our build flags is set to V1000
+        8) before running (7) we need to ensure our build flags is set to V500
 The VBXIP gets compiled and creates .vnnx, .hex and a lot many files
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------

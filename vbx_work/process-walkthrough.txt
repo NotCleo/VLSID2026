@@ -1,0 +1,48 @@
+Here is how we worked with VectorBlox-SDK;
+
+Task : Binary Classification { defective , non-defective } for Cardboard boxes (each being 5cmx5cmx5cm) with a QR code (1.25cmx1.25cm), for Post-Packaging Quality Control 
+
+What does the Icicle-Kit need? 
+1) A vnnx file for the model that performs the above classification
+2) A hex file for the model that performs the above classification
+
+
+How did we proceed?
+1) We created our own custom dataset, the description is ; 
+        
+        We want have split the dataset into three major parts:
+                    (i) Training = {(800,defective), (800,non-defective)} 
+                    (ii) Validation = {(800,defective), (800,non-defective)} = Augmented Copy of Training set
+                    (iii) Test = {(25,defective), (25,non-defective)} 
+
+2) We then created a training script (refer train.py) and a validation script (refer test.py)
+        
+        We obtained the following outputs files : 
+              (i) model_cardboard.onnx 
+              (ii) model_cardboard.pth    
+        
+3) We then created our own custom calibration file (refer generate_customdataset_npy.py) 
+
+        We obtained the following outputs file : 
+              (i) calibration_224x224x3.npy
+
+4) We then moved our files { model_cardboard.onnx , calibration_224x224x3.npy } into the SDK environment 
+
+5) A summary of commands to run in VBX environment are 
+      
+      How to generate the vectorblox IP (V500)
+              (i) Clone VectorBlox SDK if not already
+              (ii) cd into /home/joeld/VectorBlox-SDK/ and run "bash install_dependencies.sh"
+              (iii) In the same directory run "source setup_vars.sh"
+              (iv) Confirm whether the virtual environment has been configured and activated
+              (v) cd $VBX_SDK/tutorials/{network_source}/{network} (for our case it is; cd $VBX_SDK/tutorials/onnx/)
+              (vi) bash {network}.sh (for our case it is ; refer : bash vlsid.sh) 
+
+6) We then generated the following files : 
+              (i) model_cardboard.hex
+              (ii) model_cardboard.vnnx
+              (iii) model_cardboard_quant.tflite 
+              (iv) model_cardboard_quant.pre.tflite 
+
+7) To verify our vnnx file, we used a test-script (refer test_vnnx.py)
+
